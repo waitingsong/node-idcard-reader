@@ -61,3 +61,13 @@ export function find_device(): DeviceConfig  {
     }
     return res;
 }
+
+export function connect_device(opts: DeviceConfig): void  {
+        if (h.SDT_OpenPort(opts.port) === 144) {
+            opts.openPort = 1;
+        }
+        else {
+            opts.port = 0;
+            opts.openPort = 0;
+        }
+}
