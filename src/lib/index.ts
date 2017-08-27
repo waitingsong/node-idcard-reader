@@ -71,3 +71,10 @@ export function connect_device(opts: DeviceConfig): void  {
             opts.openPort = 0;
         }
 }
+
+export function disconnect_device(port: number): number {
+    const res = h.SDT_ClosePort(port);
+
+    console.log('disconnect device at port:' + port, res);
+    return res;
+}
