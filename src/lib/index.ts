@@ -23,3 +23,41 @@ const h: h = ffi.Library(dllCard, {
     'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
 });
 
+export interface DeviceConfig {
+    port: number;   // device connect port
+    useUsb: boolean;    // device access mode usb or serial
+    openPort: number;   // port reopen during call function every time
+}
+
+export function find_device(): DeviceConfig  {
+    const res = {
+        port: 0,
+        useUsb: true,
+        openPort: 0,
+    };
+
+    // 必须先检测usb端口
+    for (let i = 1000; i <= 1016; i++) {
+        if (h.SDT_OpenPort(i) === 144) {
+            res.port = i;
+            res.useUsb = true;
+            console.log(`Found device at usb port: ${i}`);
+            disconnect_device(res.port);
+            break;
+        }
+    }
+    if (res.port) {
+        return res;
+    }
+    // 检测串口
+    for (let i = 1; i <= 16; i++) {
+        if (h.SDT_OpenPort(i) === 144) {
+            res.port = i;
+            res.useUsb = false;
+            console.log(`Found device at serial port: ${i}`);
+            disconnect_device(res.port);
+            break;
+        }
+    }
+    return res;
+}
