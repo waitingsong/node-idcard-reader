@@ -5,12 +5,13 @@ import {tmpdir} from 'os';
 const tmpDir = tmpdir();
 const dllCard = __dirname + '/../../lib/sdtapi.dll';
 const dllImage = __dirname + '/../../lib/wltrs.dll';
-console.log(tmpDir);
+// console.log(tmpDir);
 
 
 interface h {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
     SDT_ClosePort(port: number): number;  // 关闭端口
+    SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
 }
 
 const h: h = ffi.Library(dllCard, {
@@ -77,4 +78,50 @@ export function disconnect_device(port: number): number {
 
     console.log('disconnect device at port:' + port, res);
     return res;
+}
+
+// 找卡
+export function find_card(opts: DeviceConfig): Promise<string | void> {
+    console.time('find_card elps');
+
+    return new Promise((resolve, reject) => {
+        if (_find_card(opts) === 159) {
+            console.timeEnd('find_card');
+            resolve();
+            return;
+        }
+
+        let c = 0;
+        const intv = setInterval(() => {
+            if (c > 3) {
+                clearInterval(intv);
+                console.timeEnd('find_card elps');
+                reject(`find_card fail over ${c}times`);
+                return;
+            }
+
+            const res = _find_card(opts);
+
+            if (res === 159) {
+                clearInterval(intv);
+                console.timeEnd('find_card');
+                setTimeout(resolve, 4000);  // 移动中读取到卡 延迟执行选卡
+                return;
+            }
+            c += 1;
+        }, 1000);
+    });
+}
+
+function _find_card(opts: DeviceConfig): number {
+    try {
+        const buf = Buffer.alloc(4);
+
+        // buf.type = ref.types.int;
+        return h.SDT_StartFindIDCard(opts.port, buf, opts.openPort);
+    }
+    catch(ex) {
+        console.error(ex);
+        return 0;
+    }
 }
