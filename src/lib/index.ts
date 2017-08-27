@@ -2,16 +2,17 @@
 
 import * as ffi from 'ffi';
 import * as ref from 'ref';
+import * as path from 'path';
+import * as fs from 'fs';
 import {tmpdir} from 'os';
 
 const tmpDir = tmpdir();
-const dllTxt = __dirname + '/../../lib/sdtapi.dll';
-const dllImage = __dirname + '/../../lib/wltrs.dll';
+let h: h;
 // console.log(tmpDir);
 
 export interface IDCRConfig {
-    dllTxt: string;
-    dllImage: string;
+    dllTxt: string; // path of sdtapi.dll
+    dllImage: string;   // path of wltrs.dll
     findCardRetryTimes?: number | undefined;    // 找卡重试数量，间隔1sec
 }
 
@@ -21,38 +22,69 @@ const config: IDCRConfig = {
     findCardRetryTimes: 5,
 };
 
-export function init(args: IDCRConfig): Promise<string | void> {
-    Object.assign(config, args);
-
-    if ( ! config.dllTxt) {
-        return Promise.reject('dllTxt defined or blank');
-    }
-    if ( ! config.dllImage) {
-        return Promise.reject('dllImage defined or blank');
-    }
-
-    if (typeof config.findCardRetryTimes === 'undefined' || isNaN(config.findCardRetryTimes) || config.findCardRetryTimes < 0) {
-        config.findCardRetryTimes = 5;
-    }
-
-    return Promise.resolve();
-}
-
 interface h {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
     SDT_ClosePort(port: number): number;  // 关闭端口
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
 }
 
-const h: h = ffi.Library(dllTxt, {
-    'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
-    'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
-    'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
-    'SDT_SelectIDCard': ['int', ['int', 'pointer', 'int'] ], // 选卡
-    'SDT_ReadBaseMsg': ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
-    'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
-    'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
-});
+
+export function init(args: IDCRConfig): Promise<boolean> {
+    Object.assign(config, args);
+
+    if (typeof config.dllTxt === 'undefined' || ! config.dllTxt) {
+        return Promise.reject('dllTxt defined or blank');
+    }
+    if (typeof config.dllImage === 'undefined' || ! config.dllImage) {
+        return Promise.reject('dllImage defined or blank');
+    }
+    config.dllTxt = path.normalize(config.dllTxt);
+    config.dllImage = path.normalize(config.dllImage);
+    console.log(config);
+
+    if (typeof config.findCardRetryTimes === 'undefined' || isNaN(config.findCardRetryTimes) || config.findCardRetryTimes < 0) {
+        config.findCardRetryTimes = 5;
+    }
+
+    return validate_dll_files(config).then(err => {
+        if ( ! err) {
+            h = ffi.Library(config.dllTxt, {
+                'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
+                'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
+                'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
+                'SDT_SelectIDCard': ['int', ['int', 'pointer', 'int'] ], // 选卡
+                'SDT_ReadBaseMsg': ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
+                'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
+                'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
+            });
+            // console.log(h)
+        }
+        return Promise.resolve(err ? false : true);
+    });
+
+}
+
+function validate_dll_files(settings: IDCRConfig): Promise<string | void> {
+    return new Promise((resolve, reject) => {
+        fs.stat(settings.dllTxt, (err, stats) => {
+            if (err && err.code === 'ENOENT') {
+                return reject('File not exists: ' + settings.dllTxt);
+            }
+            resolve();
+        });
+    }).then(() => {
+        fs.stat(settings.dllImage, (err, stats) => {
+            if (err && err.code === 'ENOENT') {
+                return Promise.reject('File not exists: ' + settings.dllImage);
+            }
+            return Promise.resolve();
+        });
+    }).catch(ex => {
+        console.error(ex);
+        return Promise.resolve('not');
+    });
+}
+
 
 export interface DeviceConfig {
     port: number;   // device connect port
@@ -145,7 +177,6 @@ export function find_card(opts: DeviceConfig): Promise<string | void> {
         else {
             reject('No found card');
         }
-
     });
 }
 
