@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import * as ffi from 'ffi';
 import * as ref from 'ref';
 import {tmpdir} from 'os';
@@ -7,6 +9,34 @@ const dllTxt = __dirname + '/../../lib/sdtapi.dll';
 const dllImage = __dirname + '/../../lib/wltrs.dll';
 // console.log(tmpDir);
 
+export interface IDCRConfig {
+    dllTxt: string;
+    dllImage: string;
+    findCardRetryTimes?: number | undefined;    // 找卡重试数量，间隔1sec
+}
+
+const config: IDCRConfig = {
+    dllTxt: '',
+    dllImage: '',
+    findCardRetryTimes: 5,
+};
+
+export function init(args: IDCRConfig): Promise<string | void> {
+    Object.assign(config, args);
+
+    if ( ! config.dllTxt) {
+        return Promise.reject('dllTxt defined or blank');
+    }
+    if ( ! config.dllImage) {
+        return Promise.reject('dllImage defined or blank');
+    }
+
+    if (typeof config.findCardRetryTimes === 'undefined' || isNaN(config.findCardRetryTimes) || config.findCardRetryTimes < 0) {
+        config.findCardRetryTimes = 5;
+    }
+
+    return Promise.resolve();
+}
 
 interface h {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
@@ -91,25 +121,31 @@ export function find_card(opts: DeviceConfig): Promise<string | void> {
             return;
         }
 
-        let c = 0;
-        const intv = setInterval(() => {
-            if (c > 3) {
-                clearInterval(intv);
-                console.timeEnd('find_card elps');
-                reject(`find_card fail over ${c}times`);
-                return;
-            }
+        if (config.findCardRetryTimes && config.findCardRetryTimes > 0) {
+            let c = 0;
+            const intv = setInterval(() => {
+                if (c >= <number> config.findCardRetryTimes) {
+                    clearInterval(intv);
+                    console.timeEnd('find_card elps');
+                    reject(`find_card fail over ${c}times`);
+                    return;
+                }
 
-            const res = _find_card(opts);
+                const res = _find_card(opts);
 
-            if (res === 159) {
-                clearInterval(intv);
-                console.timeEnd('find_card');
-                setTimeout(resolve, 4000);  // 移动中读取到卡 延迟执行选卡
-                return;
-            }
-            c += 1;
-        }, 1000);
+                if (res === 159) {
+                    clearInterval(intv);
+                    console.timeEnd('find_card');
+                    setTimeout(resolve, 4000);  // 移动中读取到卡 延迟执行选卡
+                    return;
+                }
+                c += 1;
+            }, 1000);
+        }
+        else {
+            reject('No found card');
+        }
+
     });
 }
 
