@@ -13,6 +13,7 @@ install/*
 Thumbs.db
 *.~pck
 node_modules/
+npm-debug.log
 
 
 # files for the dex VM
