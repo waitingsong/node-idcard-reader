@@ -3,7 +3,7 @@ import * as ref from 'ref';
 import {tmpdir} from 'os';
 
 const tmpDir = tmpdir();
-const dllCard = __dirname + '/../../lib/sdtapi.dll';
+const dllTxt = __dirname + '/../../lib/sdtapi.dll';
 const dllImage = __dirname + '/../../lib/wltrs.dll';
 // console.log(tmpDir);
 
@@ -14,7 +14,7 @@ interface h {
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
 }
 
-const h: h = ffi.Library(dllCard, {
+const h: h = ffi.Library(dllTxt, {
     'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
     'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
     'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
