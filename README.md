@@ -13,7 +13,46 @@
 
 ## 使用
 ```js
-const IDCR = require('idcard-reader');
+const idcr = require('idcard-reader');
+const settings = {
+    dllTxt: 'c:/sdtapi.dll',
+    dllImage: 'c:/wltrs.dll',   // 可空 空则不处理头像
+};
+
+idcr.init(settings).then((inited) => {
+    if ( ! inited) {
+        return;
+    }
+    const device = idcr.find_device();
+
+    if (device.port) {
+        idcr.fetch_data(device).then(data => {
+            console.log(data);
+        });
+    }
+});
+
+```
+
+## 读取数据结构
+```
+{
+    base: {
+        name: string;       // 姓名
+        gender: number;     // 性别 1，2
+        genderName: string; // 性别 男,女
+        nation: string;     // 民族代码
+        nationName: string; // 民族中文
+        birth: string;      // 出生日期
+        address: string;    // 住址
+        idc: string;        // 身份证号
+        regorg: string;     // 签发机关
+        startdate: string;  // 有效期开始
+        enddate: string;    // 有效期结束 日期或者"长期"
+    }
+    imagePath: string;      // 头像文件路径
+}
+
 ```
 
 # License
