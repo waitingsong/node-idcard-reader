@@ -161,3 +161,14 @@ function _find_card(opts: config.Device): number {
         return 0;
     }
 }
+
+
+// 选卡
+export function select_card(device: config.Device): boolean {
+    const buf = Buffer.alloc(4);
+
+    // buf.type = ref.types.int;
+    const res = apit.SDT_SelectIDCard(device.port, buf, device.openPort);
+
+    return res === 144 ? true : false;
+}

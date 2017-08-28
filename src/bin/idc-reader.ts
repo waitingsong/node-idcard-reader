@@ -16,8 +16,12 @@ idcr.init(settings).then((inited) => {
          idcr.connect_device(config);
          console.log('config:', config);
 
-         idcr.find_card(config).then(res => {
-             console.log('Found card', res);
+         idcr.find_card(config).then(msg => {
+             console.log('Found card ' + msg);
+
+             const res = idcr.select_card(config);
+
+             console.log('Select card ' + (res ? 'succeed' : 'failed'));
 
              idcr.disconnect_device(config.port);
          }).catch(ex => {

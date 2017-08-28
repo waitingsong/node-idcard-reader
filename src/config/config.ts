@@ -16,6 +16,7 @@ export interface ApiTxt {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
     SDT_ClosePort(port: number): number;  // 关闭端口
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
+    SDT_SelectIDCard(port: number, pucSN: Buffer, iIfOpen: number): number; // 选卡
 }
 
 // ffi调用dll接口方法
