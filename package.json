@@ -8,9 +8,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "rm -rf dist/* && tsc -p ./ --outDir dist/",
+    "prepublishOnly": "npm run build",
     "idc-reader": "node ./dist/bin/idc-reader.js",
-    "build": "npm run prepublishOnly"
+    "build": "rm -rf dist/* && tsc -p ./ --outDir dist/",
+    "preinstall": "node run build"
   },
   "keywords": [
     "idcard",
