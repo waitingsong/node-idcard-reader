@@ -229,7 +229,8 @@ function _retrive_text(data: Buffer): config.DataBase  {
     const i: config.DataBase = {
         name: '',
         gender: 0,
-        nation: 0,
+        genderName: '',
+        nation: '00',
         birth: '',
         address: '',
         idc: '',
@@ -244,14 +245,30 @@ function _retrive_text(data: Buffer): config.DataBase  {
 
     i.name = s.slice(0, 15).trim();
     i.gender = +s.slice(15, 16);
-    i.nation = +s.slice(16, 18); // 民族
+    i.nation = s.slice(16, 18); // 民族
     i.birth = s.slice(18, 26);  // 16
     i.address = s.slice(26, 61).trim();   // 70
     i.idc = s.slice(61, 79);  // 身份证号
     i.regorg = s.slice(79, 94).trim();   // 签发机关
     i.startdate = s.slice(94, 102);
     i.enddate = s.slice(102, 110);
+
+    format_base(i);
     console.log(i);
 
     return i;
+}
+
+function format_base(base: config.DataBase): void {
+    switch (base.gender) {
+        case 1:
+            base.genderName = '男';
+            break;
+        case 2:
+            base.genderName = '女';
+            break;
+        default:
+            base.genderName = '未知';
+            break;
+    }
 }

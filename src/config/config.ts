@@ -57,7 +57,8 @@ export interface IDData {
 export interface DataBase {
     name: string;       // 姓名
     gender: number; // 1男，2女
-    nation: number; // 民族
+    genderName: string;
+    nation: string; // 民族代码
     birth: string;  // 出生日期
     address: string;   // 住址
     idc: string;  // 身份证号
