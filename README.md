@@ -7,7 +7,7 @@
 
 #### 安装依赖
 `npm install node-gyp -g`
-- gyp安装比较麻烦，可以先安装 windows-build-tools 来自动安装相关开发工具
+- gyp安装比较麻烦，可以先npm安装 windows-build-tools 模块来自动安装相关开发环境和工具
 
 #### 安装
 `npm install idcard-reader`
