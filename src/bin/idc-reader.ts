@@ -17,7 +17,7 @@ idcr.init(settings).then((inited) => {
          console.log('config:', config);
 
          idcr.find_card(config).then(res => {
-             console.log('found card', res);
+             console.log('Found card', res);
 
              idcr.disconnect_device(config.port);
          }).catch(ex => {
