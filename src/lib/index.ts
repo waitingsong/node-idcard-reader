@@ -209,3 +209,49 @@ export function read_card(device: config.Device): config.RawData {
         return data;
     }
 }
+
+
+export function retrive_data(data: config.RawData): config.IDData {
+    const res = <config.IDData> {};
+
+    try {
+        res.base = _retrive_text(data.text);
+        return res;
+    }
+    catch(ex) {
+        console.error('retrive_data()', ex);
+        return res;
+    }
+}
+
+function _retrive_text(data: Buffer): config.DataBase  {
+    const s: string = data && data.byteLength ? data.toString('ucs2') : '';
+    const i: config.DataBase = {
+        name: '',
+        gender: 0,
+        nation: 0,
+        birth: '',
+        address: '',
+        idc: '',
+        regorg: '',
+        startdate: '',
+        enddate: '',
+    };
+
+    if ( ! s || ! s.length) {
+        return i;
+    }
+
+    i.name = s.slice(0, 15).trim();
+    i.gender = +s.slice(15, 16);
+    i.nation = +s.slice(16, 18); // 民族
+    i.birth = s.slice(18, 26);  // 16
+    i.address = s.slice(26, 61).trim();   // 70
+    i.idc = s.slice(61, 79);  // 身份证号
+    i.regorg = s.slice(79, 94).trim();   // 签发机关
+    i.startdate = s.slice(94, 102);
+    i.enddate = s.slice(102, 110);
+    console.log(i);
+
+    return i;
+}

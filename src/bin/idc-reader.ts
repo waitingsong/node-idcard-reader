@@ -24,10 +24,13 @@ idcr.init(settings).then((inited) => {
              console.log('Select card ' + (res ? 'succeed' : 'failed'));
 
              if (res) {
-                 const data = idcr.read_card(device);
+                 const rdata = idcr.read_card(device);
 
-                 if ( ! data.err) {
+                 if ( ! rdata.err) {
                      console.log('Read card succeed');
+                     const data = idcr.retrive_data(rdata);
+
+                     console.log('Retrive data succeed');
                  }
              }
 

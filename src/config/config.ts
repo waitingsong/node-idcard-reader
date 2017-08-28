@@ -48,3 +48,20 @@ export interface RawData {
     text: Buffer;   // 文本信息
     image: Buffer;  // 图片信息 需要解码
 }
+
+export interface IDData {
+    base: DataBase;
+    image: string;
+}
+
+export interface DataBase {
+    name: string;       // 姓名
+    gender: number; // 1男，2女
+    nation: number; // 民族
+    birth: string;  // 出生日期
+    address: string;   // 住址
+    idc: string;  // 身份证号
+    regorg: string;   // 签发机关
+    startdate: string;  // 有效期开始
+    enddate: string;    // 有效期结束
+}
