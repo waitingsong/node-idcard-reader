@@ -111,14 +111,13 @@ export function disconnect_device(port: number): boolean {
 }
 
 // 找卡
-export function find_card(opts: config.Device): Promise<string | void> {
+export function find_card(opts: config.Device): Promise<string> {
     console.time('find_card.elps');
 
     return new Promise((resolve, reject) => {
         if (_find_card(opts) === 159) {
             console.timeEnd('find_card.elps');
-            resolve('succeed');
-            return;
+            return resolve('succeed');
         }
 
         if (typeof config.init.findCardRetryTimes !== 'undefined' && config.init.findCardRetryTimes > 0) {
@@ -127,8 +126,7 @@ export function find_card(opts: config.Device): Promise<string | void> {
                 if (c >= <number> config.init.findCardRetryTimes) {
                     clearInterval(intv);
                     console.timeEnd('find_card.elps');
-                    reject(`find_card fail over ${c}times`);
-                    return;
+                    return reject(`find_card fail over ${c}times`);
                 }
 
                 const res = _find_card(opts);
@@ -322,4 +320,46 @@ function _gen_image_name(prefix: string): string {
     const rstr = Math.random().toString().slice(-8);
 
     return `${prefix}${ d.getFullYear() }${(mon > 9 ? mon : '0' + mon)}${( day > 9 ? day : '0' + day )}_${rstr}`;
+}
+
+export function fetch_data(device: config.Device): Promise<config.IDData | boolean> {
+    if (device.port) {
+        connect_device(device);
+        console.log('device:', device);
+
+        return find_card(device).then((msg) => {
+            console.log('Found card ' + msg);
+
+            const res = select_card(device);
+
+            console.log('Select card ' + (res ? 'succeed' : 'failed'));
+            if (res) {
+                const rdata = read_card(device);
+
+                if ( ! rdata.err) {
+                    console.log('Read card succeed');
+                    return Promise.resolve(rdata);
+                }
+                else {
+                    return Promise.reject('rea_card() failed');
+                }
+            }
+
+            return Promise.reject('select card failed');
+        }).then(rdata => {
+            return retrive_data(rdata, device).then(data => {
+                console.log('Retrive data succeed');
+                disconnect_device(device.port);
+
+                return data;
+            });
+        }).catch(ex => {
+            console.error(ex);
+            disconnect_device(device.port);
+            return Promise.reject(false);
+        });
+    }
+    else {
+        return Promise.reject(false);
+    }
 }
