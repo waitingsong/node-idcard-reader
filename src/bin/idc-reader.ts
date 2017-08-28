@@ -12,10 +12,10 @@ idcr.init(settings).then((inited) => {
     }
     const device = idcr.find_device();
 
-     if (device.port) {
-         idcr.fetch_data(device).then(data => {
-             console.log(data);
-         });
-     }
+    if (device.port) {
+        idcr.fetch_data(device).then(data => {
+            console.log(data);
+        });
+    }
 });
 
