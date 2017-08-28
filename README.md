@@ -5,11 +5,12 @@
 - 通过node-ffi实现访问dll接口。gyp需要编译为32位
 
 #### 安装依赖
-`npm i node-gyp -g`
+`npm install node-gyp -g`
 - gyp安装比较麻烦，可以先安装 windows-build-tools 来自动安装相关开发工具
 
 #### 安装
-`npm i idcard-reader`
+`npm install idcard-reader`
+
 
 #### 使用
 ```js
@@ -31,8 +32,16 @@ idcr.init(settings).then((inited) => {
         });
     }
 });
-
 ```
+
+#### 命令行调用
+```js
+// 全局安装
+npm install idcard-reader -g
+// 执行
+idc-reader
+```
+
 
 #### 读取数据结构
 ```
