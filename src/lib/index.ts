@@ -121,11 +121,11 @@ export function disconnect_device(port: number): number {
 
 // 找卡
 export function find_card(opts: config.Device): Promise<string | void> {
-    console.time('find_card elps');
+    console.time('find_card.elps');
 
     return new Promise((resolve, reject) => {
         if (_find_card(opts) === 159) {
-            console.timeEnd('find_card');
+            console.timeEnd('find_card.elps');
             resolve();
             return;
         }
@@ -135,7 +135,7 @@ export function find_card(opts: config.Device): Promise<string | void> {
             const intv = setInterval(() => {
                 if (c >= <number> config.init.findCardRetryTimes) {
                     clearInterval(intv);
-                    console.timeEnd('find_card elps');
+                    console.timeEnd('find_card.elps');
                     reject(`find_card fail over ${c}times`);
                     return;
                 }
@@ -144,7 +144,7 @@ export function find_card(opts: config.Device): Promise<string | void> {
 
                 if (res === 159) {
                     clearInterval(intv);
-                    console.timeEnd('find_card');
+                    console.timeEnd('find_card.elps');
                     setTimeout(resolve, 4000);  // 移动中读取到卡 延迟执行选卡
                     return;
                 }
