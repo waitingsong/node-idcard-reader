@@ -21,11 +21,12 @@ export interface ApiTxt {
 }
 
 // ffi调用dll接口方法
-export interface ApiTxtDll {
+export interface ApiDll {
     [fn: string]: [string, [string]];
 }
 
-export const apiTxtDll: ApiTxtDll = {
+
+export const apiTxtDll: ApiDll = {
     'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
     'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
     'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
@@ -34,6 +35,7 @@ export const apiTxtDll: ApiTxtDll = {
     'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
     'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
 };
+
 
 // 读卡设置
 export interface Device {
