@@ -1,8 +1,9 @@
 ### 通用二代身份证读卡
 ----
 在widnows客户端实现通过二代身份证机具读取二代身份证信息
-- 使用通过dll驱动实现对多数机具的读取
+- 使用通过dll驱动实现对多数机具的读取  
 - 通过node-ffi实现访问dll接口。gyp需要编译为32位
+- [通用dll下载地址](https://www.cnblogs.com/name-lh/archive/2006/01/28/324003.html)
 
 #### 安装依赖
 `npm install node-gyp -g`
