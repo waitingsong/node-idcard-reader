@@ -1,7 +1,6 @@
 /// <reference types="node" />
 
 import * as ffi from 'ffi';
-import * as ref from 'ref';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as config from '../config/config';
@@ -153,7 +152,6 @@ function _find_card(opts: config.Device): number {
     try {
         const buf = Buffer.alloc(4);
 
-        // buf.type = ref.types.int;
         return apit.SDT_StartFindIDCard(opts.port, buf, opts.openPort);
     }
     catch(ex) {
@@ -166,8 +164,6 @@ function _find_card(opts: config.Device): number {
 // 选卡
 export function select_card(device: config.Device): boolean {
     const buf = Buffer.alloc(4);
-
-    // buf.type = ref.types.int;
     const res = apit.SDT_SelectIDCard(device.port, buf, device.openPort);
 
     return res === 144 ? true : false;
@@ -182,10 +178,6 @@ export function read_card(device: config.Device): config.RawData {
         puiPHMsgLen: Buffer.from([1024]),
     };
 
-    // opts.pucCHMsg.type = ref.types.byte;
-    // opts.puiCHMsgLen.type = ref.types.int;
-    // opts.pucPHMsg.type = ref.types.byte;
-    // opts.puiPHMsgLen.type = ref.types.int;
     // console.log(opts)
 
     const data: config.RawData = {
