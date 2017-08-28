@@ -231,6 +231,7 @@ function _retrive_text(data: Buffer): config.DataBase  {
         gender: 0,
         genderName: '',
         nation: '00',
+        nationName: '',
         birth: '',
         address: '',
         idc: '',
@@ -271,4 +272,7 @@ function format_base(base: config.DataBase): void {
             base.genderName = '未知';
             break;
     }
+    const s = config.nationMap.get(base.nation);
+
+    base.nationName = s ? s.trim() : '未知';
 }
