@@ -285,7 +285,7 @@ function format_base(base: config.DataBase): void {
 
 function decode_image(device: config.Device, buf: Buffer): Promise<string> {
     // console.log(buf.slice(0, 10));
-    const name = tmpDir + '/idcrimage_' + Math.random().toString().slice(-8);
+    const name = path.join(tmpDir, _gen_image_name('idcrimage_'));
     const tmpname = name + '.wlt';
     const apii = ffi.Library(config.init.dllImage, config.apiImgDll);
 
@@ -310,4 +310,13 @@ function decode_image(device: config.Device, buf: Buffer): Promise<string> {
         console.error(ex);
         return '';
     });
+}
+
+function _gen_image_name(prefix: string): string {
+    const d = new Date();
+    const mon = d.getMonth();
+    const day = d.getDate();
+    const rstr = Math.random().toString().slice(-8);
+
+    return `${prefix}${ d.getFullYear() }${(mon > 9 ? mon : '0' + mon)}${( day > 9 ? day : '0' + day )}_${rstr}`;
 }
