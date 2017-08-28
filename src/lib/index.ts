@@ -197,7 +197,6 @@ export function read_card(device: config.Device): config.RawData {
 
     if (data.code === 144) {
         data.err = 0;
-
     }
 
     return data;
@@ -258,7 +257,7 @@ function _retrive_text(data: Buffer): config.DataBase  {
     i.enddate = s.slice(102, 110);
 
     format_base(i);
-    console.log(i);
+    // console.log(i);
 
     return i;
 }
