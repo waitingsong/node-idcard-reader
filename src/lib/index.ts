@@ -104,11 +104,11 @@ export function connect_device(opts: config.Device): void  {
         }
 }
 
-export function disconnect_device(port: number): number {
+export function disconnect_device(port: number): boolean {
     const res = apit.SDT_ClosePort(port);
 
-    console.log('disconnect device at port:' + port, res);
-    return res;
+    console.log(`disconnect device at port: ${port} ` + (res === 144 ? 'succeed' : 'failed'));
+    return res === 144 ? true : false;
 }
 
 // 找卡
