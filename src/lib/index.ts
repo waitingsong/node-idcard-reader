@@ -296,6 +296,9 @@ function decode_image(device: config.Device, buf: Buffer): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         fs.writeFile(tmpname, buf, (err) => {
             if (err) {
+                fs.unlink(tmpname, err => {
+                    console.error('unlink tmp image file failure', err);
+                });
                 return reject(err);
             }
             console.log('image tmp has been saved:' + tmpname);
