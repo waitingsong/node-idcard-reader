@@ -17,6 +17,7 @@ export interface ApiTxt {
     SDT_ClosePort(port: number): number;  // 关闭端口
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
     SDT_SelectIDCard(port: number, pucSN: Buffer, iIfOpen: number): number; // 选卡
+    SDT_ReadBaseMsg(port: number, pucCHMsg: Buffer, puiCHMsgLen: Buffer, pucPHMsg: Buffer, puiPHMsgLen: Buffer, iIfOpen: number): number;
 }
 
 // ffi调用dll接口方法
@@ -41,3 +42,9 @@ export interface Device {
     openPort: number;   // port reopen during call function every time
 }
 
+export interface RawData {
+    err: number;    // 读取错误标识 0表示读取成功
+    code: number;    // 读卡结果码
+    text: Buffer;   // 文本信息
+    image: Buffer;  // 图片信息 需要解码
+}

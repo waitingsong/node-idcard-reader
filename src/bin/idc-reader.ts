@@ -23,6 +23,14 @@ idcr.init(settings).then((inited) => {
 
              console.log('Select card ' + (res ? 'succeed' : 'failed'));
 
+             if (res) {
+                 const data = idcr.read_card(device);
+
+                 if ( ! data.err) {
+                     console.log('Read card succeed');
+                 }
+             }
+
              idcr.disconnect_device(device.port);
          }).catch(ex => {
              console.log(ex);

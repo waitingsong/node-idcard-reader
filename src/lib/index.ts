@@ -172,3 +172,40 @@ export function select_card(device: config.Device): boolean {
 
     return res === 144 ? true : false;
 }
+
+
+export function read_card(device: config.Device): config.RawData {
+    const opts = {
+        pucCHMsg:  Buffer.alloc(1024),
+        puiCHMsgLen: Buffer.from([1024]),
+        pucPHMsg: Buffer.alloc(1024),
+        puiPHMsgLen: Buffer.from([1024]),
+    };
+
+    // opts.pucCHMsg.type = ref.types.byte;
+    // opts.puiCHMsgLen.type = ref.types.int;
+    // opts.pucPHMsg.type = ref.types.byte;
+    // opts.puiPHMsgLen.type = ref.types.int;
+    // console.log(opts)
+
+    const data: config.RawData = {
+        err: 1,
+        code: 0,
+        text: opts.pucCHMsg,
+        image: opts.pucPHMsg,
+    };
+
+    try {
+        const res = apit.SDT_ReadBaseMsg(device.port, opts.pucCHMsg,  opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort);
+
+        data.code = res;
+        data.err = res === 144 ? 0 : 1;
+        // console.log(opts.pucCHMsg.toString())
+
+        return data;
+    }
+    catch(ex) {
+        console.error(ex);
+        return data;
+    }
+}
