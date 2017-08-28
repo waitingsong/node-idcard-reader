@@ -185,35 +185,46 @@ export function read_card(device: config.Device): config.RawData {
         code: 0,
         text: opts.pucCHMsg,
         image: opts.pucPHMsg,
+        imagePath: '',
     };
 
     try {
-        const res = apit.SDT_ReadBaseMsg(device.port, opts.pucCHMsg,  opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort);
-
-        data.code = res;
-        data.err = res === 144 ? 0 : 1;
-        // console.log(opts.pucCHMsg.toString())
-
-        return data;
+        data.code = apit.SDT_ReadBaseMsg(device.port, opts.pucCHMsg,  opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort);
     }
     catch(ex) {
         console.error(ex);
-        return data;
     }
+
+    if (data.code === 144) {
+        data.err = 0;
+
+    }
+
+    return data;
 }
 
 
-export function retrive_data(data: config.RawData): config.IDData {
+// 若device参数空或者未设置config.init.dllImage值 则不读取处理头像
+export function retrive_data(data: config.RawData, device?: config.Device): Promise<config.IDData> {
     const res = <config.IDData> {};
 
     try {
         res.base = _retrive_text(data.text);
-        return res;
+        if (device && config.init.dllImage) {
+            return decode_image(device, data.image).then(str => {
+                res.imagePath = str ? str : '';
+                return res;
+            });
+        }
+        else {
+            res.imagePath = '';
+        }
     }
     catch(ex) {
         console.error('retrive_data()', ex);
-        return res;
     }
+
+    return Promise.resolve(res);
 }
 
 function _retrive_text(data: Buffer): config.DataBase  {
@@ -270,4 +281,34 @@ function format_base(base: config.DataBase): void {
     base.enddate && (base.enddate.trim());
 
     base.nationName = s ? s.trim() : '未知';
+}
+
+
+function decode_image(device: config.Device, buf: Buffer): Promise<string> {
+    // console.log(buf.slice(0, 10));
+    const name = tmpDir + '/idcrimage_' + Math.random().toString().slice(-8);
+    const tmpname = name + '.wlt';
+    const apii = ffi.Library(config.init.dllImage, config.apiImgDll);
+
+    if ( ! apii) {
+        return Promise.resolve('');
+    }
+
+    return new Promise<string>((resolve, reject) => {
+        fs.writeFile(tmpname, buf, (err) => {
+            if (err) {
+                return reject(err);
+            }
+            console.log('image tmp has been saved:' + tmpname);
+
+            const res = apii.GetBmp(tmpname, device.useUsb);
+            const ipath = path.normalize(name + '.bmp');
+            console.log('resolve image res:' + res, ipath);
+
+            resolve(ipath);
+        });
+    }).catch((ex: NodeJS.ErrnoException) => {
+        console.error(ex);
+        return '';
+    });
 }

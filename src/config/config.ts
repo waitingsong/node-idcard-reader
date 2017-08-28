@@ -25,7 +25,6 @@ export interface ApiDll {
     [fn: string]: [string, [string]];
 }
 
-
 export const apiTxtDll: ApiDll = {
     'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
     'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
@@ -35,6 +34,11 @@ export const apiTxtDll: ApiDll = {
     'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
     'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
 };
+
+export const apiImgDll: ApiDll = {
+    'GetBmp': ['int', ['string', 'int'] ],   // 读取大头像
+};
+
 
 
 // 读卡设置
@@ -49,11 +53,12 @@ export interface RawData {
     code: number;    // 读卡结果码
     text: Buffer;   // 文本信息
     image: Buffer;  // 图片信息 需要解码
+    imagePath: string;  // 图片文件地址
 }
 
 export interface IDData {
-    base: DataBase;
-    image: string;
+    base: DataBase; // object
+    imagePath: string;  // image file path
 }
 
 export interface DataBase {

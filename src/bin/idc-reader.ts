@@ -28,9 +28,9 @@ idcr.init(settings).then((inited) => {
 
                  if ( ! rdata.err) {
                      console.log('Read card succeed');
-                     const data = idcr.retrive_data(rdata);
-
-                     console.log('Retrive data succeed');
+                     idcr.retrive_data(rdata, device).then(data => {
+                        console.log('Retrive data succeed', data);
+                     });
                  }
              }
 
