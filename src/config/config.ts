@@ -18,6 +18,21 @@ export interface ApiTxt {
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
 }
 
+// ffi调用dll接口方法
+export interface ApiTxtDll {
+    [fn: string]: [string, [string]];
+}
+
+export const apiTxtDll: ApiTxtDll = {
+    'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
+    'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
+    'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
+    'SDT_SelectIDCard': ['int', ['int', 'pointer', 'int'] ], // 选卡
+    'SDT_ReadBaseMsg': ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
+    'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
+    'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
+};
+
 // 读卡设置
 export interface Device {
     port: number;   // device connect port
