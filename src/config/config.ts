@@ -10,7 +10,7 @@ export const init: Init = {
     findCardRetryTimes: 5,
 };
 
-export interface h {
+export interface ApiTxt {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
     SDT_ClosePort(port: number): number;  // 关闭端口
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡

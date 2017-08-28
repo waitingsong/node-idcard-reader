@@ -8,7 +8,7 @@ import * as config from '../config/config';
 import {tmpdir} from 'os';
 
 const tmpDir = tmpdir();
-let h: config.h;
+let apit: config.ApiTxt;
 // console.log(tmpDir);
 
 
@@ -31,7 +31,7 @@ export function init(args: config.Init): Promise<boolean> {
 
     return validate_dll_files(config.init).then(err => {
         if ( ! err) {
-            h = ffi.Library(config.init.dllTxt, {
+            apit = ffi.Library(config.init.dllTxt, {
                 'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
                 'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
                 'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
@@ -40,7 +40,7 @@ export function init(args: config.Init): Promise<boolean> {
                 'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
                 'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
             });
-            // console.log(h)
+            // console.log(apit)
         }
         return Promise.resolve(err ? false : true);
     });
@@ -78,7 +78,7 @@ export function find_device(): config.Device {
 
     // 必须先检测usb端口
     for (let i = 1000; i <= 1016; i++) {
-        if (h.SDT_OpenPort(i) === 144) {
+        if (apit.SDT_OpenPort(i) === 144) {
             res.port = i;
             res.useUsb = true;
             console.log(`Found device at usb port: ${i}`);
@@ -91,7 +91,7 @@ export function find_device(): config.Device {
     }
     // 检测串口
     for (let i = 1; i <= 16; i++) {
-        if (h.SDT_OpenPort(i) === 144) {
+        if (apit.SDT_OpenPort(i) === 144) {
             res.port = i;
             res.useUsb = false;
             console.log(`Found device at serial port: ${i}`);
@@ -103,7 +103,7 @@ export function find_device(): config.Device {
 }
 
 export function connect_device(opts: config.Device): void  {
-        if (h.SDT_OpenPort(opts.port) === 144) {
+        if (apit.SDT_OpenPort(opts.port) === 144) {
             opts.openPort = 1;
         }
         else {
@@ -113,7 +113,7 @@ export function connect_device(opts: config.Device): void  {
 }
 
 export function disconnect_device(port: number): number {
-    const res = h.SDT_ClosePort(port);
+    const res = apit.SDT_ClosePort(port);
 
     console.log('disconnect device at port:' + port, res);
     return res;
@@ -162,7 +162,7 @@ function _find_card(opts: config.Device): number {
         const buf = Buffer.alloc(4);
 
         // buf.type = ref.types.int;
-        return h.SDT_StartFindIDCard(opts.port, buf, opts.openPort);
+        return apit.SDT_StartFindIDCard(opts.port, buf, opts.openPort);
     }
     catch(ex) {
         console.error(ex);
