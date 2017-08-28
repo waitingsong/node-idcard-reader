@@ -17,11 +17,8 @@ export function init(args: config.Init): Promise<boolean> {
     if (typeof config.init.dllTxt === 'undefined' || ! config.init.dllTxt) {
         return Promise.reject('dllTxt defined or blank');
     }
-    if (typeof config.init.dllImage === 'undefined' || ! config.init.dllImage) {
-        return Promise.reject('dllImage defined or blank');
-    }
     config.init.dllTxt = path.normalize(config.init.dllTxt);
-    config.init.dllImage = path.normalize(config.init.dllImage);
+    config.init.dllImage = config.init.dllImage ? path.normalize(config.init.dllImage) : '';
     console.log(config.init);
 
     if (typeof config.init.findCardRetryTimes === 'undefined' || isNaN(config.init.findCardRetryTimes) || config.init.findCardRetryTimes < 0) {
@@ -47,12 +44,17 @@ function validate_dll_files(settings: config.Init): Promise<string | void> {
             resolve();
         });
     }).then(() => {
-        fs.stat(settings.dllImage, (err, stats) => {
-            if (err && err.code === 'ENOENT') {
-                return Promise.reject('File not exists: ' + settings.dllImage);
-            }
+        if (typeof settings.dllImage === 'string' && settings.dllImage) {
+            fs.stat(settings.dllImage, (err, stats) => {
+                if (err && err.code === 'ENOENT') {
+                    return Promise.reject('File not exists: ' + settings.dllImage);
+                }
+                return Promise.resolve();
+            });
+        }
+        else {
             return Promise.resolve();
-        });
+        }
     }).catch(ex => {
         console.error(ex);
         return Promise.resolve('not');
@@ -285,6 +287,9 @@ function decode_image(device: config.Device, buf: Buffer): Promise<string> {
     // console.log(buf.slice(0, 10));
     const name = path.join(tmpDir, _gen_image_name('idcrimage_'));
     const tmpname = name + '.wlt';
+    if ( ! config.init.dllImage) {
+        return Promise.resolve('');
+    }
     const apii = ffi.Library(config.init.dllImage, config.apiImgDll);
 
     if ( ! apii) {
