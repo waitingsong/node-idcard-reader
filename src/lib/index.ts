@@ -266,5 +266,8 @@ function format_base(base: config.DataBase): void {
     }
     const s = config.nationMap.get(base.nation);
 
+    base.startdate && (base.startdate.trim());
+    base.enddate && (base.enddate.trim());
+
     base.nationName = s ? s.trim() : '未知';
 }

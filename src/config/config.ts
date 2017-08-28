@@ -65,7 +65,7 @@ export interface DataBase {
     idc: string;  // 身份证号
     regorg: string;   // 签发机关
     startdate: string;  // 有效期开始
-    enddate: string;    // 有效期结束
+    enddate: string;    // 有效期结束 日期或者"长期"
 }
 
 export const nationMap: Map<string, string> = new Map([
