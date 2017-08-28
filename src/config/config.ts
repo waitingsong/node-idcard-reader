@@ -1,6 +1,6 @@
 export interface Init {
     dllTxt: string; // path of sdtapi.dll
-    dllImage?: string | undefined;   // path of wltrs.dll 可空则不读取头像
+    dllImage?: string | undefined;   // path of wltrs.dll 可空则不处理头像
     findCardRetryTimes?: number;    // 找卡重试数量，间隔1sec
 }
 
