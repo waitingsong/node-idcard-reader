@@ -2,8 +2,8 @@
 import * as idcr from '../lib/index';
 
 const settings = {
-    dllTxt: 'd:/sdtapi.dll',
-    dllImage: 'd:/wltrs.dll',
+    dllTxt: 'c:/sdtapi.dll',
+    dllImage: 'c:/wltrs.dll',
 };
 
 idcr.init(settings).then((inited) => {
