@@ -151,11 +151,11 @@ export function find_card(opts: config.Device): Promise<string> {
     });
 }
 
-function _find_card(opts: config.Device): number {
+function _find_card(device: config.Device): number {
     try {
         const buf = Buffer.alloc(4);
 
-        return apit.SDT_StartFindIDCard(opts.port, buf, opts.openPort);
+        return apit.SDT_StartFindIDCard(device.port, buf, device.openPort);
     }
     catch(ex) {
         console.error(ex);
