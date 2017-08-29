@@ -70,6 +70,7 @@ export function find_device(): config.Device {
         port: 0,
         useUsb: true,
         openPort: 0,
+        samid: '',
     };
 
     // 必须先检测usb端口
@@ -77,7 +78,10 @@ export function find_device(): config.Device {
         if (apit.SDT_OpenPort(i) === 144) {
             res.port = i;
             res.useUsb = true;
+            res.openPort = 1;
             console.log(`Found device at usb port: ${i}`);
+            get_samid(res);
+            res.openPort = 0;
             disconnect_device(res.port);
             break;
         }
@@ -91,6 +95,9 @@ export function find_device(): config.Device {
             res.port = i;
             res.useUsb = false;
             console.log(`Found device at serial port: ${i}`);
+            res.openPort = 1;
+            get_samid(res);
+            res.openPort = 0;
             disconnect_device(res.port);
             break;
         }
@@ -211,6 +218,7 @@ export function retrive_data(data: config.RawData, device?: config.Device): Prom
     const res = <config.IDData> {};
 
     try {
+        res.samid = device ? device.samid : '';
         res.base = _retrive_text(data.text);
         if (device && config.init.dllImage) {
             return decode_image(device, data.image).then(str => {
@@ -369,5 +377,14 @@ export function fetch_data(device: config.Device): Promise<config.IDData | boole
     }
     else {
         return Promise.reject(false);
+    }
+}
+
+export function get_samid(device: config.Device): void {
+    const buf = Buffer.alloc(40);
+    const res = apit.SDT_GetSAMIDToStr(device.port, buf, device.openPort);
+
+    if (res === 144) {
+        device.samid = buf.toString('utf8').trim().replace(/\u0000/g, '');
     }
 }

@@ -18,6 +18,7 @@ export interface ApiTxt {
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
     SDT_SelectIDCard(port: number, pucSN: Buffer, iIfOpen: number): number; // 选卡
     SDT_ReadBaseMsg(port: number, pucCHMsg: Buffer, puiCHMsgLen: Buffer, pucPHMsg: Buffer, puiPHMsgLen: Buffer, iIfOpen: number): number;
+    SDT_GetSAMIDToStr(port: number, pcSAMID: Buffer, ilfOpen: number): number;
 }
 
 // ffi调用dll接口方法
@@ -32,7 +33,8 @@ export const apiTxtDll: ApiDll = {
     'SDT_SelectIDCard': ['int', ['int', 'pointer', 'int'] ], // 选卡
     'SDT_ReadBaseMsg': ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
     'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
-    'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
+    'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM 
+    'SDT_GetSAMIDToStr': ['int', ['int', 'pointer', 'int']], // 读取SAM_V的编号 返回值0x90-成功，其他-失败
 };
 
 export const apiImgDll: ApiDll = {
@@ -46,6 +48,7 @@ export interface Device {
     port: number;   // device connect port
     useUsb: boolean;    // device access mode usb or serial
     openPort: number;   // port reopen during call function every time
+    samid: string;      // SAM id
 }
 
 export interface RawData {
@@ -59,6 +62,7 @@ export interface RawData {
 export interface IDData {
     base: DataBase; // object
     imagePath: string;  // image file path
+    samid: string;  // SAM id
 }
 
 export interface DataBase {

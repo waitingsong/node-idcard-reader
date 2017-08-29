@@ -61,6 +61,7 @@ idc-reader
         enddate: string;    // 有效期结束 日期或者"长期"
     }
     imagePath: string;      // 头像文件路径
+    samid: string;          // 机具SAM序列号
 }
 
 ```
