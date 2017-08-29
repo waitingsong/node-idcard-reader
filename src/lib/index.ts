@@ -126,7 +126,7 @@ export function disconnect_device(port: number): boolean {
 export function find_card(opts: config.Device): Promise<string> {
     console.time('find_card.elps');
 
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
         if (_find_card(opts) === 159) {
             console.timeEnd('find_card.elps');
             return resolve('succeed');
@@ -140,7 +140,6 @@ export function find_card(opts: config.Device): Promise<string> {
                     console.timeEnd('find_card.elps');
                     return reject(`find_card fail over ${c}times`);
                 }
-
                 const res = _find_card(opts);
 
                 if (res === 159) {
@@ -155,6 +154,9 @@ export function find_card(opts: config.Device): Promise<string> {
         else {
             reject('No found card');
         }
+    }).catch(ex => {
+        console.error(ex);
+        return Promise.resolve('No found card');
     });
 }
 
@@ -362,21 +364,23 @@ export function fetch_data(device: config.Device): Promise<config.IDData | boole
             }
 
             return Promise.reject('select card failed');
-        }).then(rdata => {
-            return retrive_data(rdata, device).then(data => {
-                console.log('Retrive data succeed');
-                disconnect_device(device.port);
+        })
+            .then(rdata => {
+                return retrive_data(rdata, device).then(data => {
+                    console.log('Retrive data succeed');
+                    disconnect_device(device.port);
 
-                return data;
+                    return data;
+                });
+            })
+            .catch(ex => {
+                console.error(ex);
+                disconnect_device(device.port);
+                return Promise.resolve(false);
             });
-        }).catch(ex => {
-            console.error(ex);
-            disconnect_device(device.port);
-            return Promise.reject(false);
-        });
     }
     else {
-        return Promise.reject(false);
+        return Promise.resolve(false);
     }
 }
 
