@@ -44,19 +44,22 @@ function validate_dll_files(settings: config.Init): Promise<string | void> {
             resolve();
         });
     }).then(() => {
-        if (typeof settings.dllImage === 'string' && settings.dllImage) {
-            fs.stat(settings.dllImage, (err, stats) => {
-                if (err && err.code === 'ENOENT') {
-                    return Promise.reject('File not exists: ' + settings.dllImage);
-                }
-                return Promise.resolve();
-            });
-        }
-        else {
-            return Promise.resolve();
-        }
+        return new Promise<string | void>((resolve, reject) => {
+            if (typeof settings.dllImage === 'string' && settings.dllImage) {
+                fs.stat(settings.dllImage, (err, stats) => {
+                    if (err) {
+                        console.error(err);
+                        return reject('File not exists: ' + settings.dllImage);
+                    }
+                    return resolve();
+                });
+            }
+            else {
+                // 未指定照片解码dll 允许
+                return resolve();
+            }
+        });
     }).catch(ex => {
-        console.error(ex);
         return Promise.resolve('not');
     });
 }
