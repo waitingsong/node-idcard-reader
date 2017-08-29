@@ -1,6 +1,6 @@
 {
   "name": "idcard-reader",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "通过二代身份证机具读取二代身份证信息",
   "main": "./dist/index.js",
   "bin": {
