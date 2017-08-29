@@ -76,7 +76,7 @@ export interface DataBase {
 }
 
 export const nationMap: Map<string, string> = new Map([
-    ['01', '汉'],
+    ['01', '汉族'],
     ['02', '蒙古族'],
     ['03', '回族'],
     ['04', '藏族'],
