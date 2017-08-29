@@ -10,8 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublishOnly": "npm run build",
     "idc-reader": "node ./dist/bin/idc-reader.js",
-    "build": "rm -rf dist/* && tsc -p ./ --outDir dist/",
-    "afterinstall": "node run build"
+    "build": "rm -rf dist/* && tsc -p ./ --outDir dist/"
   },
   "keywords": [
     "idcard",
