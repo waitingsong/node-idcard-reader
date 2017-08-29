@@ -51,7 +51,8 @@
     // "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
     "newLine": "lf",
     "maxNodeModuleJsDepth": 1,
-    "strict": true                            /* Enable all strict type-checking options. */
+    "strict": true,                            /* Enable all strict type-checking options. */
+    "pretty": true
   },
   "include": [
     "src/**/*"
