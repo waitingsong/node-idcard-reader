@@ -7,7 +7,7 @@ import * as config from '../config/config';
 import {tmpdir} from 'os';
 
 const tmpDir = tmpdir();
-let apit: config.ApiTxt;
+let apit: config.ApiBase;
 // console.log(tmpDir);
 
 

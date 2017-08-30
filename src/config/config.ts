@@ -12,7 +12,7 @@ export const init: Init = {
 };
 
 // dll接口方法
-export interface ApiTxt {
+export interface ApiBase {
     SDT_OpenPort(port: number): number; // 查找设备并打开端口
     SDT_ClosePort(port: number): number;  // 关闭端口
     SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number; // 找卡
