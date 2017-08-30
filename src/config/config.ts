@@ -19,6 +19,9 @@ export interface ApiTxt {
     SDT_SelectIDCard(port: number, pucSN: Buffer, iIfOpen: number): number; // 选卡
     SDT_ReadBaseMsg(port: number, pucCHMsg: Buffer, puiCHMsgLen: Buffer, pucPHMsg: Buffer, puiPHMsgLen: Buffer, iIfOpen: number): number;
     SDT_GetSAMIDToStr(port: number, pcSAMID: Buffer, ilfOpen: number): number;
+    // 读取追加信息 (端口号，指向读到的追加信息，指向读到的追加信息长度，ilfOpen) 返回值0x90-读取追加信息成功，其他-读取追加信息失败}
+    SDT_ReadNewAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, ilfOpen: number): number;
+    SDT_ReadAllAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, iIfOpen: number): number;
 }
 
 // ffi调用dll接口方法
@@ -35,6 +38,8 @@ export const apiTxtDll: ApiDll = {
     'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
     'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM 
     'SDT_GetSAMIDToStr': ['int', ['int', 'pointer', 'int']], // 读取SAM_V的编号 返回值0x90-成功，其他-失败
+    'SDT_ReadNewAppMsg': ['int', ['int', 'pointer', 'pointer', 'int']], // 读取追加信息
+    'SDT_ReadAllAppMsg': ['int', ['int', 'pointer', 'pointer', 'int']],
 };
 
 export const apiImgDll: ApiDll = {
