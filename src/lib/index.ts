@@ -7,7 +7,7 @@ import * as config from '../config/config';
 import {tmpdir} from 'os';
 
 const tmpDir = tmpdir();
-let apit: config.ApiBase;
+let apib: config.ApiBase;
 // console.log(tmpDir);
 
 
@@ -27,8 +27,8 @@ export function init(args: config.Init): Promise<boolean> {
 
     return validate_dll_files(config.init).then(err => {
         if ( ! err) {
-            apit = ffi.Library(config.init.dllTxt, config.apiTxtDll);
-            // console.log(apit)
+            apib = ffi.Library(config.init.dllTxt, config.apiTxtDll);
+            // console.log(apib)
         }
         return Promise.resolve(err ? false : true);
     });
@@ -75,7 +75,7 @@ export function find_device(): config.Device {
 
     // 必须先检测usb端口
     for (let i = 1000; i <= 1016; i++) {
-        if (apit.SDT_OpenPort(i) === 144) {
+        if (apib.SDT_OpenPort(i) === 144) {
             res.port = i;
             res.useUsb = true;
             res.openPort = 1;
@@ -91,7 +91,7 @@ export function find_device(): config.Device {
     }
     // 检测串口
     for (let i = 1; i <= 16; i++) {
-        if (apit.SDT_OpenPort(i) === 144) {
+        if (apib.SDT_OpenPort(i) === 144) {
             res.port = i;
             res.useUsb = false;
             console.log(`Found device at serial port: ${i}`);
@@ -106,7 +106,7 @@ export function find_device(): config.Device {
 }
 
 export function connect_device(opts: config.Device): void  {
-        if (apit.SDT_OpenPort(opts.port) === 144) {
+        if (apib.SDT_OpenPort(opts.port) === 144) {
             opts.openPort = 1;
         }
         else {
@@ -116,7 +116,7 @@ export function connect_device(opts: config.Device): void  {
 }
 
 export function disconnect_device(port: number): boolean {
-    const res = apit.SDT_ClosePort(port);
+    const res = apib.SDT_ClosePort(port);
 
     console.log(`disconnect device at port: ${port} ` + (res === 144 ? 'succeed' : 'failed'));
     return res === 144 ? true : false;
@@ -164,7 +164,7 @@ function _find_card(device: config.Device): number {
     try {
         const buf = Buffer.alloc(4);
 
-        return apit.SDT_StartFindIDCard(device.port, buf, device.openPort);
+        return apib.SDT_StartFindIDCard(device.port, buf, device.openPort);
     }
     catch(ex) {
         console.error(ex);
@@ -176,7 +176,7 @@ function _find_card(device: config.Device): number {
 // 选卡
 export function select_card(device: config.Device): boolean {
     const buf = Buffer.alloc(4);
-    const res = apit.SDT_SelectIDCard(device.port, buf, device.openPort);
+    const res = apib.SDT_SelectIDCard(device.port, buf, device.openPort);
 
     return res === 144 ? true : false;
 }
@@ -201,7 +201,7 @@ export function read_card(device: config.Device): config.RawData {
     };
 
     try {
-        data.code = apit.SDT_ReadBaseMsg(device.port, opts.pucCHMsg,  opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort);
+        data.code = apib.SDT_ReadBaseMsg(device.port, opts.pucCHMsg,  opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort);
     }
     catch(ex) {
         console.error(ex);
@@ -386,7 +386,7 @@ export function fetch_data(device: config.Device): Promise<config.IDData | boole
 
 export function get_samid(device: config.Device): void {
     const buf = Buffer.alloc(40);
-    const res = apit.SDT_GetSAMIDToStr(device.port, buf, device.openPort);
+    const res = apib.SDT_GetSAMIDToStr(device.port, buf, device.openPort);
 
     if (res === 144) {
         device.samid = buf.toString('utf8').trim().replace(/\u0000/g, '');
