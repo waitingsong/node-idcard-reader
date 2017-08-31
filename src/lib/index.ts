@@ -158,15 +158,20 @@ export function find_device(): config.Device {
 }
 
 export function connect_device(device: config.Device): void {
-        if (apib.SDT_OpenPort(device.port) === 144) {
-            device.openPort = 1;
-            device.inUse = true;
-        }
-        else {
-            device.port = 0;
-            device.openPort = 0;
-            device.inUse = false;
-        }
+    if (device && device.inUse) {
+        console.error('connect_device() device in use', device);
+        return;
+    }
+
+    if (apib.SDT_OpenPort(device.port) === 144) {
+        device.openPort = 1;
+        device.inUse = true;
+    }
+    else {
+        device.port = 0;
+        device.openPort = 0;
+        device.inUse = false;
+    }
 }
 
 export function disconnect_device(device: config.Device): boolean {
