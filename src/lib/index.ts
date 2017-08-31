@@ -156,7 +156,7 @@ export function find_device(): config.Device {
     return res;
 }
 
-export function connect_device(device: config.Device): void  {
+export function connect_device(device: config.Device): void {
         if (apib.SDT_OpenPort(device.port) === 144) {
             device.openPort = 1;
             device.inUse = true;
