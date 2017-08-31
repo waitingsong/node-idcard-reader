@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import * as idcr from '../lib/index';
 
-const settings = {
+
+const settings: idcr.config.init = {
     dllTxt: 'c:/sdtapi.dll',
     dllImage: 'c:/wltrs.dll',
 };

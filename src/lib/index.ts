@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as config from '../config/config';
 import {tmpdir} from 'os';
+export {config} ;
 
 const tmpDir = tmpdir();
 let apib: config.ApiBase;
