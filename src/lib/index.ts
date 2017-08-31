@@ -395,7 +395,7 @@ function _gen_image_name(prefix: string): string {
     return `${prefix}${ d.getFullYear() }${(mon > 9 ? mon : '0' + mon)}${( day > 9 ? day : '0' + day )}_${rstr}`;
 }
 
-export function fetch_data(device: config.Device): Promise<config.IDData | boolean> {
+export function fetch_data(device: config.Device): Promise<config.IDData | void> {
     if (device.port) {
         connect_device(device);
         console.log('device:', device);
@@ -411,31 +411,33 @@ export function fetch_data(device: config.Device): Promise<config.IDData | boole
 
                 if ( ! rdata.err) {
                     console.log('Read card succeed');
-                    return Promise.resolve(rdata);
-                }
-                else {
-                    return Promise.reject('rea_card() failed');
+                    return rdata;
                 }
             }
 
-            return Promise.reject('select card failed');
+            return;
         })
-            .then(rdata => {
-                return retrive_data(rdata, device).then(data => {
-                    console.log('Retrive data succeed');
-                    disconnect_device(device);
+            .then((rdata): Promise<config.IDData | void> | void => {
+                if (rdata) {
+                    return retrive_data(rdata, device).then(data => {
+                        console.log('Retrive data succeed');
+                        disconnect_device(device);
 
-                    return data;
-                });
+                        return data;
+                    });
+                }
+                else {
+                    return;
+                }
             })
             .catch(ex => {
                 console.error(ex);
                 disconnect_device(device);
-                return Promise.resolve(false);
+                return;
             });
     }
     else {
-        return Promise.resolve(false);
+        return Promise.resolve();
     }
 }
 
