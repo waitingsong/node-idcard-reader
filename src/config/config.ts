@@ -53,6 +53,7 @@ export interface Device {
     port: number;   // device connect port
     useUsb: boolean;    // device access mode usb or serial
     openPort: number;   // port reopen during call function every time
+    inUse: boolean; // device in use
     samid: string;      // SAM id
 }
 

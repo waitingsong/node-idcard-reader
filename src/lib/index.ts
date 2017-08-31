@@ -74,13 +74,14 @@ export function find_device_list(all: boolean = true): config.Device[] {
                 port: i,
                 useUsb: true,
                 openPort: 1,
+                inUse: true,
                 samid: '',
             };
 
             console.log(`Found device at usb port: ${i}`);
             get_samid(res);
             res.openPort = 0;
-            disconnect_device(res.port);
+            disconnect_device(res);
 
             arr.push(res);
             if ( ! all) {
@@ -96,13 +97,14 @@ export function find_device_list(all: boolean = true): config.Device[] {
                 port: i,
                 useUsb: false,
                 openPort: 1,
+                inUse: true,
                 samid: '',
             };
 
             console.log(`Found device at serial port: ${i}`);
             get_samid(res);
             res.openPort = 0;
-            disconnect_device(res.port);
+            disconnect_device(res);
 
             arr.push(res);
             if ( ! all) {
@@ -118,6 +120,7 @@ export function find_device(): config.Device {
         port: 0,
         useUsb: true,
         openPort: 0,
+        inUse: false,
         samid: '',
     };
 
@@ -130,7 +133,7 @@ export function find_device(): config.Device {
             console.log(`Found device at usb port: ${i}`);
             get_samid(res);
             res.openPort = 0;
-            disconnect_device(res.port);
+            disconnect_device(res);
             break;
         }
     }
@@ -146,7 +149,7 @@ export function find_device(): config.Device {
             res.openPort = 1;
             get_samid(res);
             res.openPort = 0;
-            disconnect_device(res.port);
+            disconnect_device(res);
             break;
         }
     }
@@ -156,17 +159,20 @@ export function find_device(): config.Device {
 export function connect_device(opts: config.Device): void  {
         if (apib.SDT_OpenPort(opts.port) === 144) {
             opts.openPort = 1;
+            opts.inUse = true;
         }
         else {
             opts.port = 0;
             opts.openPort = 0;
+            opts.inUse = false;
         }
 }
 
-export function disconnect_device(port: number): boolean {
-    const res = apib.SDT_ClosePort(port);
+export function disconnect_device(device: config.Device): boolean {
+    const res = apib.SDT_ClosePort(device.port);
 
-    console.log(`disconnect device at port: ${port} ` + (res === 144 ? 'succeed' : 'failed'));
+    console.log(`disconnect device at port: ${device.port} ` + (res === 144 ? 'succeed' : 'failed'));
+    device.inUse = false;
     return res === 144 ? true : false;
 }
 
@@ -416,14 +422,14 @@ export function fetch_data(device: config.Device): Promise<config.IDData | boole
             .then(rdata => {
                 return retrive_data(rdata, device).then(data => {
                     console.log('Retrive data succeed');
-                    disconnect_device(device.port);
+                    disconnect_device(device);
 
                     return data;
                 });
             })
             .catch(ex => {
                 console.error(ex);
-                disconnect_device(device.port);
+                disconnect_device(device);
                 return Promise.resolve(false);
             });
     }
