@@ -64,6 +64,54 @@ function validate_dll_files(settings: config.Init): Promise<string | void> {
     });
 }
 
+export function find_device_list(all: boolean = true): config.Device[] {
+    const arr: config.Device[] = [];
+
+    // 必须先检测usb端口
+    for (let i = 1000; i <= 1016; i++) {
+        if (apib.SDT_OpenPort(i) === 144) {
+            const res = {
+                port: i,
+                useUsb: true,
+                openPort: 1,
+                samid: '',
+            };
+
+            console.log(`Found device at usb port: ${i}`);
+            get_samid(res);
+            res.openPort = 0;
+            disconnect_device(res.port);
+
+            arr.push(res);
+            if ( ! all) {
+                break;
+            }
+        }
+    }
+
+    // 检测串口
+    for (let i = 1; i <= 16; i++) {
+        if (apib.SDT_OpenPort(i) === 144) {
+            const res = {
+                port: i,
+                useUsb: false,
+                openPort: 1,
+                samid: '',
+            };
+
+            console.log(`Found device at serial port: ${i}`);
+            get_samid(res);
+            res.openPort = 0;
+            disconnect_device(res.port);
+
+            arr.push(res);
+            if ( ! all) {
+                break;
+            }
+        }
+    }
+    return arr;
+}
 
 export function find_device(): config.Device {
     const res = {
