@@ -21,18 +21,22 @@ const settings = {
     dllImage: 'c:/wltrs.dll',   // 可空 空则不处理头像
 };
 
+
 idcr.init(settings).then((inited) => {
     if ( ! inited) {
         return;
     }
-    const device = idcr.find_device();
+    // 返回所有可用机具列表数组
+    const devices = idcr.find_device_list();
 
-    if (device.port) {
-        idcr.fetch_data(device).then(data => {
+    if (devices.length) {
+        // 使用第一个机具进行读取
+        idcr.fetch_data(devices[0]).then(data => {
             console.log(data);
         });
     }
 });
+
 ```
 
 #### 命令行调用
