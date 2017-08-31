@@ -19,6 +19,7 @@ const idcr = require('idcard-reader');
 const settings = {
     dllTxt: 'c:/sdtapi.dll',
     dllImage: 'c:/wltrs.dll',   // 可空 空则不处理头像
+    imgSaveDir: '',             // 头像图片生成保存目录 空则使用系统临时目录
 };
 
 

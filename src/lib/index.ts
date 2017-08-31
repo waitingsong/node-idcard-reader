@@ -8,6 +8,7 @@ import {tmpdir} from 'os';
 export {config as Config};
 
 const tmpDir = tmpdir();
+let imgSaveDir: string = '';
 let apib: config.ApiBase;
 // console.log(tmpDir);
 
@@ -20,6 +21,7 @@ export function init(args: config.Init): Promise<boolean> {
     }
     config.init.dllTxt = path.normalize(config.init.dllTxt);
     config.init.dllImage = config.init.dllImage ? path.normalize(config.init.dllImage) : '';
+    config.init.imgSaveDir = config.init.imgSaveDir && typeof config.init.imgSaveDir === 'string' ?  path.normalize(config.init.imgSaveDir) : path.join(tmpDir, 'idcard-reader');
     console.log(config.init);
 
     if (typeof config.init.findCardRetryTimes === 'undefined' || isNaN(config.init.findCardRetryTimes) || config.init.findCardRetryTimes < 0) {
@@ -60,9 +62,66 @@ function validate_dll_files(settings: config.Init): Promise<string | void> {
                 return resolve();
             }
         });
+    }).then(() => {
+        return test_write(<string> settings.imgSaveDir);
     }).catch(ex => {
         return Promise.resolve('not');
     });
+}
+
+function create_dir(dir: string): Promise<string | void> {
+    return new Promise((resolve, reject) => {
+        fs.mkdir(dir, (err) => {
+            if (err) {
+                console.error(err);
+                return reject('mkdir imgdir err: ');
+            }
+            resolve();
+        });
+    });
+}
+
+function dir_exist(dir: string): Promise<string | void> {
+    return new Promise((resolve, reject) => {
+        fs.stat(dir, (err, stats) => {
+            if (err) {
+                return resolve('dir not exists: ' + dir);
+            }
+            resolve();
+        });
+    });
+}
+
+function test_write(dir: string): Promise<string | void> {
+    return dir_exist(dir).then((err) => {
+        if (err) {  // 目录不存在 创建
+            return create_dir(dir);
+        }
+    })
+        .then((err) => {
+            if (err) {  // 创建目录失败
+                return err;
+            }
+            // 创建测试文件
+            const file = path.join(dir, '.test');
+
+            return <Promise<string | void>> new Promise((resolve, reject) => {
+                fs.writeFile(file, 'idcr test', (err) => {
+                    if (err) {
+                        console.error(err);
+                        return reject('fail');
+                    }
+                    resolve();
+                });
+            });
+        })
+        .then((err) => {
+            if (err) {  // 创建测试文件失败
+                return err;
+            }
+            imgSaveDir = dir;
+            console.log('imgSaveDir: ' + dir);
+        });
 }
 
 export function find_device_list(all: boolean = true): config.Device[] {
@@ -77,6 +136,7 @@ export function find_device_list(all: boolean = true): config.Device[] {
                 openPort: 1,
                 inUse: true,
                 samid: '',
+                imgSaveDir: imgSaveDir,
             };
 
             console.log(`Found device at usb port: ${i}`);
@@ -100,6 +160,7 @@ export function find_device_list(all: boolean = true): config.Device[] {
                 openPort: 1,
                 inUse: true,
                 samid: '',
+                imgSaveDir: imgSaveDir,
             };
 
             console.log(`Found device at serial port: ${i}`);
@@ -123,6 +184,7 @@ export function find_device(): config.Device {
         openPort: 0,
         inUse: false,
         samid: '',
+        imgSaveDir: imgSaveDir,
     };
 
     // 必须先检测usb端口
@@ -358,7 +420,7 @@ function format_base(base: config.DataBase): void {
 
 function decode_image(device: config.Device, buf: Buffer): Promise<string> {
     // console.log(buf.slice(0, 10));
-    const name = path.join(tmpDir, _gen_image_name('idcrimage_'));
+    const name = path.join(device.imgSaveDir, _gen_image_name('idcrimage_'));
     const tmpname = name + '.wlt';
     if ( ! config.init.dllImage) {
         return Promise.resolve('');
