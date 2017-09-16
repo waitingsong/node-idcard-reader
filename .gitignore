@@ -1,3 +1,5 @@
+*.map
+run
 tags
 *.swp
 *.bak
@@ -5,7 +7,7 @@ tags
 *~
 log
 logs
-install/*
+/install/*
 /cache
 *.md5
 /uploads
@@ -13,8 +15,10 @@ install/*
 Thumbs.db
 *.~pck
 node_modules
-node_modules*/
+node_modules*
 npm-debug.log
+coverage
+.idea
 
 
 # files for the dex VM
