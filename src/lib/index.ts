@@ -17,7 +17,7 @@ export function init(args: config.Init): Promise<boolean> {
     Object.assign(config.init, args);
 
     if (typeof config.init.dllTxt === 'undefined' || ! config.init.dllTxt) {
-        return Promise.reject('dllTxt defined or blank');
+        return Promise.reject('params dllTxt undefined or blank');
     }
     config.init.dllTxt = path.normalize(config.init.dllTxt);
     config.init.dllImage = config.init.dllImage ? path.normalize(config.init.dllImage) : '';
