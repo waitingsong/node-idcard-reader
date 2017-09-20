@@ -30,7 +30,13 @@ export function init(args: config.Init): Promise<boolean> {
 
     return validate_dll_files(config.init).then(err => {
         if ( ! err) {
-            apib = ffi.Library(config.init.dllTxt, config.apiTxtDll);
+            try {
+                apib = ffi.Library(config.init.dllTxt, config.apiTxtDll);
+            }
+            catch(ex) {
+                console.error(ex);
+                return Promise.resolve(false);
+            }
             // console.log(apib)
         }
         return Promise.resolve(err ? false : true);
