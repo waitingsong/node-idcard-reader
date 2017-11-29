@@ -1,43 +1,59 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint-eslint-rules"
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint-eslint-rules"
+  ],
+  "jsRules": {},
+  "rules": {
+    "array-bracket-spacing": [true, "never", {"singleValue": false, "objectsInArrays": true, "arraysInArrays": true} ],	// 设置在括号内使用空格风格
+    "block-spacing": [true, "always"],	// 强制在单行代码块中使用一致的空格
+    "brace-style": [true, "stroustrup", { "allowSingleLine": true }],	// 大括号风格要求 
+    "comment-format": [true, "check-space", {"ignore-words": ["-", "+"]}],  // 强制在注释中 // 或 /* 使用一致的空格 
+    "curly": true,	// 要求遵循大括号约定 
+    "eofline": true,
+    "forin": true,
+    "linebreak-style": [true , "LF" ],
+    "no-arg": true,
+    "no-consecutive-blank-lines": [true, 4],	// 多个空行控制
+    "no-console": [true, { "allow": ["error"] }],
+    "no-construct": true,	// 禁止对 String，Number 和 Boolean 使用 new 操作符
+    "no-control-regex": true,
+    "no-duplicate-variable": true,
+    "no-empty": false,  // 禁止空块语句
+    "no-extra-semi": true,
+    "no-eval": true,
+    "no-multi-spaces": [ true, { "exceptions": { "PropertyAssignment": true, "VariableDeclaration": false } } ] ,	// 禁止出现多个空格
+    "no-string-throw": true,
+    "no-trailing-whitespace": true,	// 禁用行尾空白 
+    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
+    "no-use-before-declare": true,  // 禁止在变量定义之前使用它们
+    "no-var-keyword": true,  // 要求使用 let 或 const 而不是 var
+    "object-curly-spacing": [true, "always"],	// 强制在大括号中使用一致的空格
+    "quotemark": [true, "single"],
+    "radix": true,
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "ter-arrow-spacing": [true, { "before": true, "after": true }],	// 要求箭头函数的箭头之前或之后有空格
+    "ter-func-call-spacing": [true, "never"],	// disallow spacing between function identifiers and their invocations
+    "ter-indent": [true, 2, 
+      {
+        "SwitchCase": 1
+      }
     ],
-    "jsRules": {},
-    "rules": {
-      "array-bracket-spacing": [true, "never", {"singleValue": false, "objectsInArrays": true, "arraysInArrays": true} ],	// 设置在括号内使用空格风格
-      "block-spacing": [true, "always"],	// 强制在单行代码块中使用一致的空格
-      "brace-style": [true, "stroustrup", { "allowSingleLine": true }],	// 大括号风格要求 
-      "curly": true,	// 要求遵循大括号约定 
-      "eofline": true,
-      "forin": true,
-      "indent": [true, "space", 4],
-      "linebreak-style": [true , "LF" ],
-      "no-arg": true,
-      "no-consecutive-blank-lines": [true, 4],	// 多个空行控制
-      "no-console": [false],
-      "no-construct": true,	// 禁止对 String，Number 和 Boolean 使用 new 操作符
-      "no-empty": false,  // 禁止空块语句
-      "no-extra-semi": true,
-      "no-eval": true,
-      "no-multi-spaces": [ true, { "exceptions": { "PropertyAssignment": true, "VariableDeclaration": false } } ] ,	// 禁止出现多个空格
-      "no-new-object": true,	// 禁止使用 Object 构造函数 new Object, 使用{}替代
-      "no-string-throw": true,
-      "no-trailing-whitespace": true,	// 禁用行尾空白 
-      "no-unused-variable": false,
-      "no-use-before-declare": true,  // 禁止在变量定义之前使用它们
-      "no-var-keyword": true,  // 要求使用 let 或 const 而不是 var
-      "object-curly-spacing": [true, "always"],	// 强制在大括号中使用一致的空格
-      "quotemark": [ true, "single" ],
-      "semicolon": [ true, "always", "ignore-bound-class-methods" ],
-      "spaced-comment": [true, "check-space", {"ignore-words": ["-", "+"]}],  // 强制在注释中 // 或 /* 使用一致的空格 
-      "ter-arrow-spacing": [true, { "before": true, "after": true }],	// 要求箭头函数的箭头之前或之后有空格
-      "ter-no-irregular-whitespace": true, // 禁止不规则的空白
-      "ter-func-call-spacing": [true, "never"],	// disallow spacing between function identifiers and their invocations
-      "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],	// 当最后一个元素或属性与闭括号 ] 或 右大括号 在 不同的行时，要求使用拖尾逗号；当在 同一行时，禁止使用拖尾逗号
-      "triple-equals": true,
-      "use-isnan": true, // 要求使用 isNaN() 检查 NaN
-      "valid-typeof": true  // 强制 typeof 表达式与有效的字符串进行比较 
-    },
-    "rulesDirectory": []
+    "ter-no-irregular-whitespace": true, // 禁止不规则的空白
+    "trailing-comma": [true, 
+      {
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never"
+        },
+        "singleline": "never",
+        "esSpecCompliant": true
+      }
+    ],	// 当最后一个元素或属性与闭括号 ] 或 右大括号 在 不同的行时，要求使用拖尾逗号；当在 同一行时，禁止使用拖尾逗号
+    "triple-equals": true,
+    "use-isnan": true, // 要求使用 isNaN() 检查 NaN
+    "valid-typeof": true  // 强制 typeof 表达式与有效的字符串进行比较 
+  },
+  "rulesDirectory": []
 }
