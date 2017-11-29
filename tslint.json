@@ -21,7 +21,7 @@
 
       "brace-style": [true, "stroustrup", { "allowSingleLine": true }],	// 大括号风格要求 
       "curly": true,	// 要求遵循大括号约定 
-      "object-curly-spacing": [true, "never"],	// 强制在大括号中使用一致的空格
+      "object-curly-spacing": [true, "always"],	// 强制在大括号中使用一致的空格
 
       // "comma-spacing": [1, { "before": false, "after": true }],	// 强制在逗号周围使用空格 禁止逗号前出现空格,强制逗号后空格
       "no-multi-spaces": [ true, { "exceptions": { "PropertyAssignment": true, "VariableDeclaration": false } } ] ,	// 禁止出现多个空格
