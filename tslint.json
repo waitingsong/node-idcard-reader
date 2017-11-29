@@ -12,6 +12,7 @@
     "curly": true,	// 要求遵循大括号约定 
     "eofline": true,
     "forin": true,
+    "indent": [true, "spaces", 2],
     "linebreak-style": [true , "LF" ],
     "no-arg": true,
     "no-consecutive-blank-lines": [true, 4],	// 多个空行控制
