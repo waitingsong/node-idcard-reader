@@ -7,10 +7,18 @@
     "idc-reader": "./dist/bin/idc-reader.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build",
+    "build": "npm run clean && npm run lint && npm run build:ts && npm run jslint",
+    "build:ts": "tsc -p ./ --outDir dist/",
+    "clean": "rm -rf dist/*",
+    "cov": "nyc mocha",
+    "cov:coveralls": "nyc mocha && nyc report --reporter=text-lcov | coveralls",
+    "jslint": "eslint --fix dist/**/*.js",
     "idc-reader": "node ./dist/bin/idc-reader.js",
-    "build": "rm -rf dist/* && tsc -p ./ --outDir dist/"
+    "lint": "tslint --fix -p tslint.json -e **/*.d.ts -t stylish src/**/*.ts test/**/*.ts",
+    "prepublishOnly": "npm run build",
+    "test": "npm run test:appveyor",
+    "test:appveyor": "mocha --config test/mocha.appveyor.opts",
+    "test:travis": "mocha --config test/mocha.travis.opts"
   },
   "keywords": [
     "idcard",
@@ -32,18 +40,18 @@
   },
   "homepage": "https://github.com/waitingsong/node-idcard-reader#readme",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.9.0"
   },
   "dependencies": {
     "ffi": "^2.2.0"
   },
   "devDependencies": {
-    "@types/ffi": "^0.0.19",
-    "@types/node": "^8.0.25",
+    "@types/ffi": "^0.1.0",
+    "@types/node": "^8.9.5",
     "rimraf": "^2.6.1",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.8.0",
-    "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.6.2"
+    "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-eslint-rules": "^5.1.0",
+    "typescript": "^2.7.2"
   }
 }

@@ -19,6 +19,8 @@ node_modules*
 npm-debug.log
 coverage
 .idea
+.nyc_output
+.coveralls.yml
 
 
 # files for the dex VM
