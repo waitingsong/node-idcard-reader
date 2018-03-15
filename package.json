@@ -42,6 +42,25 @@
   "engines": {
     "node": ">=8.9.0"
   },
+  "nyc": {
+    "exclude": [
+      "**/*.js",
+      "**/*.test.ts",
+      "**/*.d.ts",
+      "test",
+      "dist",
+      "src/bin"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "all": true
+  },
   "dependencies": {
     "ffi": "^2.2.0"
   },
