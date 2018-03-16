@@ -4,7 +4,6 @@ import { basename } from 'path'
 import * as assert from 'power-assert'
 
 import * as idcr from '../src/lib/index'
-import { IDData } from '../src/lib/model'
 
 
 const filename = basename(__filename)
@@ -25,10 +24,10 @@ describe(filename, () => {
         assert(false, 'No device found')
         return
       }
-      const ret: IDData = await idcr.read(devices[0])
+      const ret = await idcr.read(devices[0])
 
-      assert(!! ret, 'result invalid')
-      assert(ret.base && ret.base.name, 'name of IDData empty')
+      assert(!! ret, 'IDData invalid')
+      assert(ret && ret.base && ret.base.name, 'name of IDData empty')
     }
     catch (ex) {
       assert(false, ex)
