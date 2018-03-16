@@ -1,9 +1,9 @@
 #!/usr/bin/env node
+
 import * as idcr from '../lib/index'
-import { Options } from '../lib/model'
 
 
-const opts: Options = {
+const opts = {
   dllTxt: 'c:/sdtapi.dll',
   dllImage: 'c:/wltrs.dll',
 }
