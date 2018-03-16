@@ -41,6 +41,7 @@ export interface Device {
   inUse: boolean // device in use
   samid: string      // SAM id
   options: DeviceOptions
+  apib: ApiBase
 }
 
 export interface RawData {

@@ -25,9 +25,6 @@ import {
 } from './model'
 
 
-let apib: ApiBase
-
-
 export async function init(args: Options): Promise<Device[]> {
   const opts = <DeviceOptions> { ...initialOpts, ...args }
 
@@ -46,8 +43,8 @@ export async function init(args: Options): Promise<Device[]> {
   logger(opts, opts.debug)
 
   await validateDllFiles(opts)
-  apib = ffi.Library(opts.dllTxt, apiTxtDll)
-  const devices = findDeviceList(opts)
+  const apib = ffi.Library(opts.dllTxt, apiTxtDll)
+  const devices = findDeviceList(opts, apib)
 
   if (devices && devices.length) {
     return devices
@@ -112,7 +109,7 @@ async function testWrite(dir: string | void): Promise<void> {
   // logger('imgSaveDir: ' + dir)
 }
 
-function findDeviceList(options: Options): Device[] {
+function findDeviceList(options: Options, apib: ApiBase): Device[] {
   const arr: Device[] = []
 
   // 必须先检测usb端口
@@ -125,6 +122,7 @@ function findDeviceList(options: Options): Device[] {
         inUse: true,
         samid: '',
         options,
+        apib,
       }
 
       logger(`Found device at usb port: ${i}`, options.debug)
@@ -149,6 +147,7 @@ function findDeviceList(options: Options): Device[] {
         inUse: true,
         samid: '',
         options,
+        apib,
       }
 
       logger(`Found device at serial port: ${i}`, options.debug)
@@ -172,7 +171,7 @@ function connectDevice(device: Device): void {
     return
   }
 
-  if (apib.SDT_OpenPort(device.port) === 144) {
+  if (device.apib.SDT_OpenPort(device.port) === 144) {
     device.openPort = 1
     device.inUse = true
   }
@@ -184,7 +183,7 @@ function connectDevice(device: Device): void {
 }
 
 function disconnectDevice(device: Device): boolean {
-  const res = apib.SDT_ClosePort(device.port)
+  const res = device.apib.SDT_ClosePort(device.port)
 
   logger(`disconnect device at port: ${device.port} ` + (res === 144 ? 'succeed' : 'failed'), device.options.debug)
   device.inUse = false
@@ -226,7 +225,7 @@ function _findCard(device: Device): number {
   try {
     const buf = Buffer.alloc(4)
 
-    return apib.SDT_StartFindIDCard(device.port, buf, device.openPort)
+    return device.apib.SDT_StartFindIDCard(device.port, buf, device.openPort)
   }
   catch (ex) {
     logger(ex, true)
@@ -238,7 +237,7 @@ function _findCard(device: Device): number {
 // 选卡
 export function selectCard(device: Device): boolean {
   const buf = Buffer.alloc(4)
-  const res = apib.SDT_SelectIDCard(device.port, buf, device.openPort)
+  const res = device.apib.SDT_SelectIDCard(device.port, buf, device.openPort)
 
   return res === 144 ? true : false
 }
@@ -262,7 +261,7 @@ function readCard(device: Device): RawData {
   }
 
   try {
-    data.code = apib.SDT_ReadBaseMsg(device.port, opts.pucCHMsg, opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort)
+    data.code = device.apib.SDT_ReadBaseMsg(device.port, opts.pucCHMsg, opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort)
   }
   catch (ex) {
     console.error(ex)
@@ -388,7 +387,7 @@ function _genImageName(prefix: string): string {
 
 function getSamid(device: Device): void {
   const buf = Buffer.alloc(40)
-  const res = apib.SDT_GetSAMIDToStr(device.port, buf, device.openPort)
+  const res = device.apib.SDT_GetSAMIDToStr(device.port, buf, device.openPort)
 
   if (res === 144) {
     device.samid = buf.toString('utf8').trim().replace(/\u0000/g, '')
