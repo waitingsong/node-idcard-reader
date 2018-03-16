@@ -360,17 +360,18 @@ function decodeImage(device: Device, buf: Buffer): Promise<string> {
   if (!opts.dllImage) {
     return Promise.resolve('')
   }
-  const apii = ffi.Library(opts.dllImage, apiImgDll)
+  // const apii = ffi.Library(opts.dllImage, apiImgDll)
 
-  if (!apii) {
-    return Promise.resolve('')
-  }
+  // if (!apii) {
+  //   return Promise.resolve('')
+  // }
+  // const res = apii.GetBmp(tmpname, device.useUsb)
+  // logger(['resolve image res:', res], device.options.debug)
+  logger('image tmp has been saved:' + tmpname, device.options.debug)
 
   return createFile(tmpname, buf).then(() => {
-    logger('image tmp has been saved:' + tmpname, device.options.debug)
-    const res = apii.GetBmp(tmpname, device.useUsb)
     const ipath = path.normalize(name + '.bmp')
-    logger(['resolve image res:' + res, ipath], device.options.debug)
+    logger(['resolve image file:', ipath], device.options.debug)
 
     return ipath
   })
