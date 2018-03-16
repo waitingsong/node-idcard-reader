@@ -15,6 +15,7 @@ describe(filename, () => {
     const opts: Options = {
       dllTxt: 'c:/sdtapi.dll',
       dllImage: 'c:/wltrs.dll',
+      debug: false,
     }
 
     try {
