@@ -18,18 +18,18 @@ import {
   ApiBase,
   DataBase,
   Device,
+  DeviceOptions,
   IDData,
   Options,
   RawData,
 } from './model'
 
 
-let imgSaveDir: string = ''
 let apib: ApiBase
 
 
 export async function init(args: Options): Promise<Device[]> {
-  const opts = { ...initialOpts, ...args }
+  const opts = <DeviceOptions> { ...initialOpts, ...args }
 
   if (typeof opts.dllTxt === 'undefined' || !opts.dllTxt) {
     return Promise.reject('params dllTxt undefined or blank')
@@ -37,11 +37,13 @@ export async function init(args: Options): Promise<Device[]> {
   opts.dllTxt = path.normalize(opts.dllTxt)
   opts.dllImage = opts.dllImage ? path.normalize(opts.dllImage) : ''
   opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string' ? path.normalize(opts.imgSaveDir) : path.join(tmpDir, 'idcard-reader')
-  logger(opts, opts.debug)
+  opts.debug = !! opts.debug
+  opts.searchAll = !! opts.searchAll
 
   if (typeof opts.findCardRetryTimes === 'undefined' || isNaN(opts.findCardRetryTimes) || opts.findCardRetryTimes < 0) {
     opts.findCardRetryTimes = 5
   }
+  logger(opts, opts.debug)
 
   await validateDllFiles(opts)
   apib = ffi.Library(opts.dllTxt, apiTxtDll)
@@ -95,19 +97,18 @@ async function validateDllFiles(opts: Options): Promise<void> {
     throw new Error('File not exists: ' + opts.dllImage)
   }
 
-  return testWrite(<string> opts.imgSaveDir)
+  return testWrite(opts.imgSaveDir)
 }
 
 
-async function testWrite(dir: string): Promise<void> {
-  const dirExists = await isDirExists(dir)
-
-  if ( ! dirExists) {
+async function testWrite(dir: string | void): Promise<void> {
+  if ( ! dir) {
+    throw new Error('value of imgSaveDir empty')
+  }
+  if ( ! await isDirExists(dir)) {
     await createDir(dir)
     await createFile(path.join(dir, '.test'), 'idctest') // 创建测试文件
   }
-
-  imgSaveDir = dir
   // logger('imgSaveDir: ' + dir)
 }
 
@@ -123,7 +124,6 @@ function findDeviceList(options: Options): Device[] {
         openPort: 1,
         inUse: true,
         samid: '',
-        imgSaveDir,
         options,
       }
 
@@ -148,7 +148,6 @@ function findDeviceList(options: Options): Device[] {
         openPort: 1,
         inUse: true,
         samid: '',
-        imgSaveDir,
         options,
       }
 
@@ -360,7 +359,7 @@ function formatBase(base: DataBase): void {
 
 function decodeImage(device: Device, buf: Buffer): Promise<string> {
   // console.log(buf.slice(0, 10))
-  const name = path.join(device.imgSaveDir, _genImageName('idcrimage_'))
+  const name = path.join(device.options.imgSaveDir, _genImageName('idcrimage_'))
   const tmpname = name + '.wlt'
   const opts = device.options
 

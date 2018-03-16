@@ -25,6 +25,13 @@ export interface ApiDll {
   [fn: string]: [string, string[]]
 }
 
+export interface DeviceOptions extends Options {
+  dllImage: string   // path of wltrs.dll 可空则不处理头像
+  findCardRetryTimes: number    // 找卡重试数量，间隔1sec
+  imgSaveDir: string            // 头像图片保存目录 空则使用 系统临时目录/idcard-reader
+  debug: boolean
+  searchAll: boolean // search all available device , stop searching at first device found if false
+}
 
 // 读卡设置
 export interface Device {
@@ -33,8 +40,7 @@ export interface Device {
   openPort: number   // port reopen during call function every time
   inUse: boolean // device in use
   samid: string      // SAM id
-  imgSaveDir: string
-  options: Options
+  options: DeviceOptions
 }
 
 export interface RawData {
