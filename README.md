@@ -14,36 +14,31 @@
 
 
 ## 使用
-```js
-const idcr = require('idcard-reader');
-const settings = {
+```ts
+import * as idcr from '../lib/index'
+
+
+const opts = {
     dllTxt: 'c:/sdtapi.dll',
     dllImage: 'c:/wltrs.dll',   // 可空 空则不处理头像
     imgSaveDir: '',             // 头像图片生成保存目录 空则使用系统临时目录
-};
+}
 
-
-idcr.init(settings).then((inited) => {
-    if ( ! inited) {
-        return;
-    }
-    // 返回所有可用机具列表数组
-    const devices = idcr.find_device_list();
-
-    if (devices.length) {
-        // 使用第一个机具进行读取
-        idcr.fetch_data(devices[0]).then(data => {
-            console.log(data);
-        });
-    }
-});
-
+idcr.init(opts)
+  .then((devices) => {
+    // 使用第一个机具进行读取
+    return idcr.read(devices[0])
+      .then(data => {
+        console.log(data)
+      })
+  })
+  .catch(console.error)
 ```
 
 ## 命令行调用
-```js
+```bash
 // 全局安装
-npm install idcard-reader -g
+npm install -g idcard-reader
 // 执行
 idc-reader
 ```
