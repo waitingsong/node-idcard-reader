@@ -1,5 +1,5 @@
 import { chmod, close, copyFile, mkdir, open, readFile, stat, unlink, write, writeFile } from 'fs'
-import { dirname, normalize, sep } from 'path'
+import { dirname, normalize, resolve as fresolve, sep } from 'path'
 import { promisify } from 'util'
 
 import { WriteFileOptions } from './model'
@@ -45,7 +45,7 @@ export async function createDir(path: string): Promise<void> {
     path = normalize(path)
     if (!await isDirExists(path)) {
       await path.split(sep).reduce(async (parentDir, childDir) => {
-        const curDir = resolve(await parentDir, childDir)
+        const curDir = fresolve(await parentDir, childDir)
 
         await isDirExists(curDir) || await mkdirAsync(curDir, 0o755)
 
