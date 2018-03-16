@@ -14,7 +14,7 @@
     "cov:coveralls": "nyc mocha && nyc report --reporter=text-lcov | coveralls",
     "jslint": "eslint --fix dist/**/*.js",
     "idc-reader": "node ./dist/bin/idc-reader.js",
-    "lint": "tslint --fix -p tslint.json -e **/*.d.ts -t stylish src/**/*.ts test/**/*.ts",
+    "lint": "tslint --fix -p tsconfig.json -e **/*.d.ts -t stylish src/**/*.ts test/**/*.ts",
     "prepublishOnly": "npm run build",
     "test": "npm run test:appveyor",
     "test:appveyor": "mocha --config test/mocha.appveyor.opts",
