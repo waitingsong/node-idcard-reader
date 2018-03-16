@@ -44,13 +44,15 @@ export async function createDir(path: string): Promise<void> {
   else {
     path = normalize(path)
     if (!await isDirExists(path)) {
-      await path.split(sep).reduce(async (parentDir, childDir) => {
-        const curDir = fresolve(await parentDir, childDir)
+      await path.split(sep).reduce(
+        async (parentDir, childDir) => {
+          const curDir = fresolve(await parentDir, childDir)
 
-        await isDirExists(curDir) || await mkdirAsync(curDir, 0o755)
-
-        return curDir
-      }, Promise.resolve(sep))
+          await isDirExists(curDir) || await mkdirAsync(curDir, 0o755)
+          return curDir
+        },
+        Promise.resolve(sep)
+      )
     }
 
   }
