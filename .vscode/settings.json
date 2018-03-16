@@ -1,0 +1,18 @@
+{
+  "files.exclude": {
+    "USE_GITIGNORE": true,
+    "**/*.js": {
+      "when": "$(basename).ts"
+    },
+    "**/*.map": true,
+    "run": true,
+    "logs": true,
+    "out": true,
+    "node_modules": true,
+    ".sourcemaps": true,
+    "coverage": true,
+    "dist": true,
+    "platforms": true,
+    "www": true
+  }
+}
