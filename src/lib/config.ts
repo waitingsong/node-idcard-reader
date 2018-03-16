@@ -23,20 +23,20 @@ export const idData: IDData = {
 }
 
 export const apiTxtDll: ApiDll = {
-  'SDT_OpenPort': ['int', ['int'] ],   // 查找设备端口
-  'SDT_ClosePort': ['int', ['int'] ],  // 关闭端口
-  'SDT_StartFindIDCard': ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
-  'SDT_SelectIDCard': ['int', ['int', 'pointer', 'int'] ], // 选卡
-  'SDT_ReadBaseMsg': ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
-  'SDT_GetSAMStatus': ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
-  'SDT_ResetSAM': ['int', ['int', 'int'] ],   // 重置SAM
-  'SDT_GetSAMIDToStr': ['int', ['int', 'pointer', 'int'] ], // 读取SAM_V的编号 返回值0x90-成功，其他-失败
-  'SDT_ReadNewAppMsg': ['int', ['int', 'pointer', 'pointer', 'int'] ], // 读取追加信息
-  'SDT_ReadAllAppMsg': ['int', ['int', 'pointer', 'pointer', 'int'] ],
+  SDT_OpenPort: ['int', ['int'] ],   // 查找设备端口
+  SDT_ClosePort: ['int', ['int'] ],  // 关闭端口
+  SDT_StartFindIDCard: ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
+  SDT_SelectIDCard: ['int', ['int', 'pointer', 'int'] ], // 选卡
+  SDT_ReadBaseMsg: ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ], // 读取基础信息
+  SDT_GetSAMStatus: ['int', ['int', 'int'] ],   // 对 SAM 进行状态检测
+  SDT_ResetSAM: ['int', ['int', 'int'] ],   // 重置SAM
+  SDT_GetSAMIDToStr: ['int', ['int', 'pointer', 'int'] ], // 读取SAM_V的编号 返回值0x90-成功，其他-失败
+  SDT_ReadNewAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ], // 读取追加信息
+  SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
 }
 
 export const apiImgDll: ApiDll = {
-  'GetBmp': ['int', ['string', 'int'] ],   // 读取大头像
+  GetBmp: ['int', ['string', 'int'] ],   // 读取大头像
 }
 
 

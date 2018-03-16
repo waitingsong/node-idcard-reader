@@ -1,5 +1,5 @@
 import { chmod, close, copyFile, mkdir, open, readFile, stat, unlink, write, writeFile } from 'fs'
-import { dirname, normalize, resolve, sep } from 'path'
+import { dirname, normalize, sep } from 'path'
 import { promisify } from 'util'
 
 import { WriteFileOptions } from './model'
@@ -28,7 +28,9 @@ export function isFileExists(path: string): Promise<boolean> {
 function isDirFileExists(path: string, type: 'DIR' | 'FILE'): Promise<boolean> {
   return path
     ? new Promise(resolve => {
-      stat(path, (err, stats) => ( err ? resolve(false) : resolve(type === 'DIR' ? stats.isDirectory() : stats.isFile())) )
+      stat(path, (err, stats) => (
+        err ? resolve(false) : resolve(type === 'DIR' ? stats.isDirectory() : stats.isFile())
+      ))
     })
     : Promise.resolve(false)
 }
@@ -36,7 +38,7 @@ function isDirFileExists(path: string, type: 'DIR' | 'FILE'): Promise<boolean> {
 
 // create directories recursively
 export async function createDir(path: string): Promise<void> {
-  if ( ! path) {
+  if (! path) {
     throw new Error('value of path param invalid')
   }
   else {
@@ -59,10 +61,10 @@ export async function createFile(file: string, data: any, options?: WriteFileOpt
   const path = dirname(file)
 
   /* istanbul ignore next */
-  if ( ! path) {
+  if (! path) {
     throw new Error('path empty')
   }
-  if ( ! await isDirExists(path)) {
+  if (! await isDirExists(path)) {
     await createDir(path)
   }
 

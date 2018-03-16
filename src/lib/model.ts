@@ -13,7 +13,13 @@ export interface ApiBase {
   SDT_ClosePort(port: number): number  // 关闭端口
   SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number // 找卡
   SDT_SelectIDCard(port: number, pucSN: Buffer, iIfOpen: number): number // 选卡
-  SDT_ReadBaseMsg(port: number, pucCHMsg: Buffer, puiCHMsgLen: Buffer, pucPHMsg: Buffer, puiPHMsgLen: Buffer, iIfOpen: number): number
+  SDT_ReadBaseMsg(
+    port: number,
+    pucCHMsg: Buffer,
+    puiCHMsgLen: Buffer,
+    pucPHMsg: Buffer,
+    puiPHMsgLen: Buffer,
+    iIfOpen: number): number
   SDT_GetSAMIDToStr(port: number, pcSAMID: Buffer, ilfOpen: number): number
   // 读取追加信息 (端口号，指向读到的追加信息，指向读到的追加信息长度，ilfOpen) 返回值0x90-读取追加信息成功，其他-读取追加信息失败}
   SDT_ReadNewAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, ilfOpen: number): number
@@ -52,6 +58,7 @@ export interface RawData {
   imagePath: string  // 图片文件地址
 }
 
+// tslint:disable-next-line
 export interface IDData {
   base: DataBase | null // object
   imagePath: string  // image file path

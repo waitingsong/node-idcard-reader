@@ -32,7 +32,9 @@ export async function init(args: Options): Promise<Device[]> {
   }
   opts.dllTxt = path.normalize(opts.dllTxt)
   opts.dllImage = opts.dllImage ? path.normalize(opts.dllImage) : ''
-  opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string' ? path.normalize(opts.imgSaveDir) : path.join(tmpDir, 'idcard-reader')
+  opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string'
+    ? path.normalize(opts.imgSaveDir)
+    : path.join(tmpDir, 'idcard-reader')
   opts.debug = !! opts.debug
   opts.searchAll = !! opts.searchAll
 
@@ -85,7 +87,7 @@ export async function read(device: Device): Promise<IDData | void> {
 
 
 async function validateDllFiles(opts: Options): Promise<void> {
-  if ( ! await isFileExists(opts.dllTxt)) {
+  if (! await isFileExists(opts.dllTxt)) {
     throw new Error('File not exists: ' + opts.dllTxt)
   }
   // 允许 未指定照片解码dll
@@ -98,10 +100,10 @@ async function validateDllFiles(opts: Options): Promise<void> {
 
 
 async function testWrite(dir: string | void): Promise<void> {
-  if ( ! dir) {
+  if (! dir) {
     throw new Error('value of imgSaveDir empty')
   }
-  if ( ! await isDirExists(dir)) {
+  if (! await isDirExists(dir)) {
     await createDir(dir)
     await createFile(path.join(dir, '.test'), 'idctest') // 创建测试文件
   }
@@ -130,7 +132,7 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
       disconnectDevice(device)
 
       arr.push(device)
-      if ( ! options.searchAll) {
+      if (! options.searchAll) {
         break
       }
     }
@@ -155,7 +157,7 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
       disconnectDevice(device)
 
       arr.push(device)
-      if ( ! options.searchAll) {
+      if (! options.searchAll) {
         break
       }
     }
@@ -260,7 +262,13 @@ function readCard(device: Device): RawData {
   }
 
   try {
-    data.code = device.apib.SDT_ReadBaseMsg(device.port, opts.pucCHMsg, opts.puiCHMsgLen, opts.pucPHMsg, opts.puiPHMsgLen, device.openPort)
+    data.code = device.apib.SDT_ReadBaseMsg(
+      device.port,
+      opts.pucCHMsg,
+      opts.puiCHMsgLen,
+      opts.pucPHMsg,
+      opts.puiPHMsgLen,
+      device.openPort)
   }
   catch (ex) {
     console.error(ex)
@@ -395,5 +403,6 @@ function getSamid(device: Device): void {
 }
 
 function logger(data: any, debug: boolean | void) {
+  // tslint:disable-next-line
   debug && console.log(data)
 }
