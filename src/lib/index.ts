@@ -209,7 +209,7 @@ export function findCard(device: Device): Promise<void> {
         if (c >= <number> device.options.findCardRetryTimes) {
           clearInterval(intv)
           console.timeEnd('findCard.elps')
-          throw new Error(`findCard fail over ${c}times`)
+          return reject(`findCard fail over ${c} times`)
         }
         const res = _findCard(device)
 
@@ -223,7 +223,7 @@ export function findCard(device: Device): Promise<void> {
       }, 1000)
     }
     else {
-      throw new Error('No found card')
+      return reject('No found card')
     }
   })
 }
