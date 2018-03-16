@@ -1,18 +1,13 @@
 /// <reference types="mocha" />
 
-import { tmpdir } from 'os'
-import { basename, join } from 'path'
+import { basename } from 'path'
 import * as assert from 'power-assert'
-import rewire = require('rewire')
 
 import * as idcr from '../src/lib/index'
 import { IDData } from '../src/lib/model'
 
 
 const filename = basename(__filename)
-const tmpDir = join(tmpdir(), 'test-tmp')
-const pathPrefix = 'mytest'
-const mods = rewire('../src/lib/common')
 
 
 describe(filename, () => {
