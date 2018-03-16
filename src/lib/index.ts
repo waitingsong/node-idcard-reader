@@ -193,11 +193,8 @@ function disconnectDevice(device: Device): boolean {
 
 // 找卡
 export function findCard(device: Device): Promise<void> {
-  console.time('findCard.elps')
-
   return new Promise((resolve, reject) => {
     if (_findCard(device) === 159) {
-      console.timeEnd('findCard.elps')
       return resolve()
     }
     const opts = device.options
@@ -207,14 +204,12 @@ export function findCard(device: Device): Promise<void> {
       const intv = setInterval(() => {
         if (c >= <number> device.options.findCardRetryTimes) {
           clearInterval(intv)
-          console.timeEnd('findCard.elps')
           return reject(`findCard fail over ${c} times`)
         }
         const res = _findCard(device)
 
         if (res === 159) {
           clearInterval(intv)
-          console.timeEnd('findCard.elps')
           setTimeout(resolve, 4000, 'succeed')  // 移动中读取到卡 延迟执行选卡
           return
         }
