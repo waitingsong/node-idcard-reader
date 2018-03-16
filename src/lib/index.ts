@@ -114,7 +114,7 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
   // 必须先检测usb端口
   for (let i = 1000; i <= 1016; i++) {
     if (apib.SDT_OpenPort(i) === 144) {
-      const res: Device = {
+      const device: Device = {
         port: i,
         useUsb: true,
         openPort: 1,
@@ -125,11 +125,11 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
       }
 
       logger(`Found device at usb port: ${i}`, options.debug)
-      getSamid(res)
-      res.openPort = 0
-      disconnectDevice(res)
+      getSamid(device)
+      device.openPort = 0
+      disconnectDevice(device)
 
-      arr.push(res)
+      arr.push(device)
       if ( ! options.searchAll) {
         break
       }
@@ -139,7 +139,7 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
   // 检测串口
   for (let i = 1; i <= 16; i++) {
     if (apib.SDT_OpenPort(i) === 144) {
-      const res: Device = {
+      const device: Device = {
         port: i,
         useUsb: false,
         openPort: 1,
@@ -150,11 +150,11 @@ function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
       }
 
       logger(`Found device at serial port: ${i}`, options.debug)
-      getSamid(res)
-      res.openPort = 0
-      disconnectDevice(res)
+      getSamid(device)
+      device.openPort = 0
+      disconnectDevice(device)
 
-      arr.push(res)
+      arr.push(device)
       if ( ! options.searchAll) {
         break
       }
