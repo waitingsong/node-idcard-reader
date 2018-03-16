@@ -8,7 +8,6 @@ import {
   isFileExists,
 } from './common'
 import {
-  apiImgDll,
   apiTxtDll,
   initialOpts,
   nationMap,
@@ -109,7 +108,7 @@ async function testWrite(dir: string | void): Promise<void> {
   // logger('imgSaveDir: ' + dir)
 }
 
-function findDeviceList(options: Options, apib: ApiBase): Device[] {
+function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
   const arr: Device[] = []
 
   // 必须先检测usb端口
