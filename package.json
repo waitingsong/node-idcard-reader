@@ -2,13 +2,13 @@
   "name": "idcard-reader",
   "author": "waiting",
   "version": "2.0.2",
-  "description": "é€šè¿‡äºŒä»£èº«ä»½è¯æœºå…·è¯»å–äºŒä»£èº«ä»½è¯ä¿¡æ¯",
+  "description": "Í¨¹ý¶þ´úÉí·ÝÖ¤»ú¾ß¶ÁÈ¡¶þ´úÉí·ÝÖ¤ÐÅÏ¢",
   "keywords": [
     "idcard",
     "idc-reader",
-    "èº«ä»½è¯",
-    "äºŒä»£èº«ä»½è¯",
-    "äºŒä»£è¯æœºå…·"
+    "Éí·ÝÖ¤",
+    "¶þ´úÉí·ÝÖ¤",
+    "¶þ´úÖ¤»ú¾ß"
   ],
   "engines": {
     "node": ">=8.9.0"
@@ -75,19 +75,17 @@
   },
   "scripts": {
     "bp:add": "git remote add bp https://github.com/waitingsong/npm-base",
-    "bp:sync": "git co develop && git pull --no-edit && git fetch bp && git pull --no-edit bp master && git push",
+    "bp:sync": "git pull --no-edit && git fetch bp && git pull --no-edit bp master && git push",
     "build": "npm run clean && npm run lint && npm run tsc && npm run jslint",
     "clean": "rm -rf dist/*",
     "cov": "nyc mocha",
     "cov:coveralls": "nyc mocha && nyc report --reporter=text-lcov | coveralls",
-    "git:init": "npm run bp:add && git config --global core.hooksPath ./.githooks && ts-node .githooks/init.ts",
+    "git:init": "git config --global core.hooksPath ./.githooks && ts-node .githooks/init.ts",
     "idc-reader": "node ./dist/bin/idc-reader.js",
     "jslint": "eslint --fix dist/**/*.js",
     "lint": "tslint --fix -p tsconfig.json -e **/*.d.ts -t stylish src/**/*.ts test/**/*.ts",
     "prepublishOnly": "npm run build",
-    "test": "npm run test:travis",
-    "test:appveyor": "mocha --config test/mocha.appveyor.opts",
-    "test:travis": "mocha --config test/mocha.travis.opts",
+    "test": "mocha --opts test/mocha.opts",
     "tsc": "tsc -p tsconfig.json",
     "tsc:w": "tsc -p tsconfig.json -w"
   }
