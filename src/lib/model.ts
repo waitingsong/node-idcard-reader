@@ -78,22 +78,3 @@ export interface DataBase {
   startdate: string  // 有效期开始
   enddate: string    // 有效期结束 日期或者"长期"
 }
-
-export interface ExecFileOptions {
-  cwd?: string
-  env?: object
-  encoding?: 'utf8' | string
-  timeout?: 0 | number
-  maxBuffer?: number
-  killSignal?: string
-  uid?: number
-  gid?: number
-  windowsHide?: boolean
-  windowsVerbatimArguments?: boolean
-}
-// param options of fs.writeFile()
-export interface WriteFileOptions {
-  encoding?: string | null
-  mode?: number
-  flag?: string
-}

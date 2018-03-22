@@ -6,7 +6,8 @@ import {
   createFile,
   isDirExists,
   isFileExists,
-} from './common'
+} from '../shared/index'
+
 import {
   apiTxtDll,
   initialOpts,
@@ -22,6 +23,7 @@ import {
   Options,
   RawData,
 } from './model'
+
 
 
 export async function init(args: Options): Promise<Device[]> {
