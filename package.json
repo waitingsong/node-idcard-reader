@@ -2,16 +2,16 @@
   "name": "idcard-reader",
   "author": "waiting",
   "version": "2.0.2",
-  "description": "Í¨¹ı¶ş´úÉí·İÖ¤»ú¾ß¶ÁÈ¡¶ş´úÉí·İÖ¤ĞÅÏ¢",
+  "description": "é€šè¿‡äºŒä»£èº«ä»½è¯æœºå…·è¯»å–äºŒä»£èº«ä»½è¯ä¿¡æ¯",
   "keywords": [
     "idcard",
     "idc-reader",
-    "Éí·İÖ¤",
-    "¶ş´úÉí·İÖ¤",
-    "¶ş´úÖ¤»ú¾ß"
+    "èº«ä»½è¯",
+    "äºŒä»£èº«ä»½è¯",
+    "äºŒä»£è¯æœºå…·"
   ],
   "engines": {
-    "node": ">=8.9.0"
+    "node": "^8.9.0"
   },
   "bin": {
     "idc-reader": "./dist/bin/idc-reader.js"
