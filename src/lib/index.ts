@@ -1,11 +1,12 @@
 import * as ffi from 'ffi'
-import * as path from 'path'
 
 import {
   createDir,
   createFile,
   isDirExists,
   isFileExists,
+  join,
+  normalize,
 } from '../shared/index'
 
 import {
@@ -32,11 +33,11 @@ export async function init(args: Options): Promise<Device[]> {
   if (typeof opts.dllTxt === 'undefined' || !opts.dllTxt) {
     return Promise.reject('params dllTxt undefined or blank')
   }
-  opts.dllTxt = path.normalize(opts.dllTxt)
-  opts.dllImage = opts.dllImage ? path.normalize(opts.dllImage) : ''
+  opts.dllTxt = normalize(opts.dllTxt)
+  opts.dllImage = opts.dllImage ? normalize(opts.dllImage) : ''
   opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string'
-    ? path.normalize(opts.imgSaveDir)
-    : path.join(tmpDir, 'idcard-reader')
+    ? normalize(opts.imgSaveDir)
+    : join(tmpDir, 'idcard-reader')
   opts.debug = !! opts.debug
   opts.searchAll = !! opts.searchAll
 
@@ -107,7 +108,7 @@ async function testWrite(dir: string | void): Promise<void> {
   }
   if (! await isDirExists(dir)) {
     await createDir(dir)
-    await createFile(path.join(dir, '.test'), 'idctest') // 创建测试文件
+    await createFile(join(dir, '.test'), 'idctest') // 创建测试文件
   }
   // logger('imgSaveDir: ' + dir)
 }
@@ -362,7 +363,7 @@ function formatBase(base: DataBase): void {
 
 function decodeImage(device: Device, buf: Buffer): Promise<string> {
   // console.log(buf.slice(0, 10))
-  const name = path.join(device.options.imgSaveDir, _genImageName('idcrimage_'))
+  const name = join(device.options.imgSaveDir, _genImageName('idcrimage_'))
   const tmpname = name + '.wlt'
   const opts = device.options
 
@@ -379,7 +380,7 @@ function decodeImage(device: Device, buf: Buffer): Promise<string> {
   logger('image tmp has been saved:' + tmpname, device.options.debug)
 
   return createFile(tmpname, buf).then(() => {
-    const ipath = path.normalize(name + '.bmp')
+    const ipath = normalize(name + '.bmp')
     logger(['resolve image file:', ipath], device.options.debug)
 
     return ipath
