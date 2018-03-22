@@ -400,7 +400,7 @@ function getSamid(device: Device): void {
   const res = device.apib.SDT_GetSAMIDToStr(device.port, buf, device.openPort)
 
   if (res === 144) {
-    device.samid = buf.toString('utf8').trim().replace(/\u0000/g, '')
+    device.samid = buf.toString('utf8').trim().replace(/\0/g, '')
   }
 }
 
