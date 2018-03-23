@@ -29,6 +29,7 @@ describe(filename, () => {
 
       assert(!! ret, 'IDData invalid')
       assert(ret && ret.base && ret.base.name, 'name of IDData empty')
+      assert(ret && ret.base && ret.base.idc, 'idc of IDData empty')
     }
     catch (ex) {
       assert(false, ex)
