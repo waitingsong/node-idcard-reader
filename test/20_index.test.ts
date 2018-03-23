@@ -4,10 +4,10 @@ import { basename } from 'path'
 import * as assert from 'power-assert'
 
 import * as idcr from '../src/lib/index'
+import { Options } from '../src/lib/model'
 
 
 const filename = basename(__filename)
-
 
 describe(filename, () => {
 
@@ -21,7 +21,7 @@ describe(filename, () => {
     try {
       const devices = await idcr.init(opts)
 
-      if ( ! devices.length) {
+      if (! devices.length) {
         assert(false, 'No device found')
         return
       }
