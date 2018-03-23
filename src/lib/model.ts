@@ -8,7 +8,7 @@ export interface Options {
 }
 
 // dll接口方法
-export interface ApiBase {
+export interface DllMethod {
   SDT_OpenPort(port: number): number // 查找设备并打开端口
   SDT_ClosePort(port: number): number  // 关闭端口
   SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number // 找卡
@@ -26,8 +26,8 @@ export interface ApiBase {
   SDT_ReadAllAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, iIfOpen: number): number
 }
 
-// ffi调用dll接口方法
-export interface ApiDll {
+// ffi调用dll方法定义
+export interface FfiDef {
   [fn: string]: [string, string[]]
 }
 
@@ -47,7 +47,7 @@ export interface Device {
   inUse: boolean // device in use
   samid: string      // SAM id
   options: DeviceOptions
-  apib: ApiBase
+  apib: DllMethod
 }
 
 export interface RawData {

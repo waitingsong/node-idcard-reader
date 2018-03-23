@@ -10,16 +10,16 @@ import {
 } from '../shared/index'
 
 import {
-  apiTxtDll,
+  ffiDef,
   initialOpts,
   nationMap,
   tmpDir,
 } from './config'
 import {
-  ApiBase,
   DataBase,
   Device,
   DeviceOptions,
+  DllMethod,
   IDData,
   Options,
   RawData,
@@ -47,7 +47,7 @@ export async function init(args: Options): Promise<Device[]> {
   logger(opts, opts.debug)
 
   await validateDllFiles(opts)
-  const apib = ffi.Library(opts.dllTxt, apiTxtDll)
+  const apib = ffi.Library(opts.dllTxt, ffiDef)
   const devices = findDeviceList(opts, apib)
 
   if (devices && devices.length) {
@@ -113,7 +113,7 @@ async function testWrite(dir: string | void): Promise<void> {
   // logger('imgSaveDir: ' + dir)
 }
 
-function findDeviceList(options: DeviceOptions, apib: ApiBase): Device[] {
+function findDeviceList(options: DeviceOptions, apib: DllMethod): Device[] {
   const arr: Device[] = []
 
   // 必须先检测usb端口

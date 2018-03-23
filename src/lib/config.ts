@@ -1,7 +1,7 @@
 import { tmpdir } from 'os'
 
 import {
-  ApiDll,
+  FfiDef,
   IDData,
   Options,
 } from './model'
@@ -22,7 +22,7 @@ export const idData: IDData = {
   samid: '',  // SAM id
 }
 
-export const apiTxtDll: ApiDll = {
+export const ffiDef: FfiDef = {
   SDT_OpenPort: ['int', ['int'] ],   // 查找设备端口
   SDT_ClosePort: ['int', ['int'] ],  // 关闭端口
   SDT_StartFindIDCard: ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
@@ -35,7 +35,7 @@ export const apiTxtDll: ApiDll = {
   SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
 }
 
-export const apiImgDll: ApiDll = {
+export const apiImgMethod: FfiDef = {
   GetBmp: ['int', ['string', 'int'] ],   // 读取大头像
 }
 
