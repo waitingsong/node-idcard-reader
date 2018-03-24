@@ -11,7 +11,14 @@ import {
   write,
   writeFile,
 } from 'fs'
-import { dirname, join, normalize, resolve as pathResolve, sep } from 'path'
+import {
+  basename,
+  dirname,
+  join,
+  normalize,
+  resolve as pathResolve,
+  sep,
+} from 'path'
 import { promisify } from 'util'
 
 
@@ -26,11 +33,13 @@ export const unlinkAsync = promisify(unlink)
 export const writeAsync = promisify(write)
 export const writeFileAsync = promisify(writeFile)
 export {
+  basename,
   join,
   normalize,
   pathResolve,
   promisify,
 }
+export { tmpdir } from 'os'
 
 
 export function isDirExists(path: string): Promise<boolean> {

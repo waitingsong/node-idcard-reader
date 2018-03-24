@@ -2,13 +2,13 @@
   "name": "idcard-reader",
   "author": "waiting",
   "version": "2.0.3",
-  "description": "é€šè¿‡äºŒä»£èº«ä»½è¯æœºå…·è¯»å–äºŒä»£èº«ä»½è¯ä¿¡æ¯",
+  "description": "Í¨¹ı¶ş´úÉí·İÖ¤»ú¾ß¶ÁÈ¡¶ş´úÉí·İÖ¤ĞÅÏ¢",
   "keywords": [
     "idcard",
     "idc-reader",
-    "èº«ä»½è¯",
-    "äºŒä»£èº«ä»½è¯",
-    "äºŒä»£è¯æœºå…·"
+    "Éí·İÖ¤",
+    "¶ş´úÉí·İÖ¤",
+    "¶ş´úÖ¤»ú¾ß"
   ],
   "engines": {
     "node": "^8.9.0"
@@ -80,11 +80,11 @@
     "clean": "rm -rf dist/*",
     "cov": "nyc mocha",
     "cov:coveralls": "nyc mocha && nyc report --reporter=text-lcov | coveralls",
-    "git:init": "git config --global core.hooksPath ./.githooks && ts-node .githooks/init.ts",
     "idc-reader": "node ./dist/bin/idc-reader.js",
     "jslint": "eslint --fix dist/**/*.js",
     "lint": "tslint --fix -p tsconfig.json -e **/*.d.ts -t stylish src/**/*.ts test/**/*.ts",
     "prepublishOnly": "npm run build",
+    "repo:init": "git config --global core.hooksPath ./.githooks && echo It may going for long time. Plese wait... && npm i && ts-node .githooks/init.ts",
     "test": "mocha --opts test/mocha.opts",
     "tsc": "tsc -p tsconfig.json",
     "tsc:w": "tsc -p tsconfig.json -w"
