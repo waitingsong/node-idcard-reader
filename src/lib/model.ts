@@ -7,8 +7,8 @@ export interface Options {
   searchAll?: boolean // search all available device , stop searching at first device found if false
 }
 
-// dll接口方法
-export interface DllMethod {
+// dll 接口函数类型
+export interface DllFuncsModel {
   SDT_OpenPort(port: number): number // 查找设备并打开端口
   SDT_ClosePort(port: number): number  // 关闭端口
   SDT_StartFindIDCard(port: number, pucIIN: Buffer, iIfOpen: number): number // 找卡
@@ -26,10 +26,6 @@ export interface DllMethod {
   SDT_ReadAllAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, iIfOpen: number): number
 }
 
-// ffi调用dll方法定义
-export interface FfiDef {
-  [fn: string]: [string, string[]]
-}
 
 export interface DeviceOptions extends Options {
   dllImage: string   // path of wltrs.dll 可空则不处理头像
@@ -47,7 +43,7 @@ export interface Device {
   inUse: boolean // device in use
   samid: string      // SAM id
   options: DeviceOptions
-  apib: DllMethod
+  apib: DllFuncsModel
 }
 
 export interface RawData {
@@ -77,4 +73,10 @@ export interface DataBase {
   regorg: string   // 签发机关
   startdate: string  // 有效期开始
   enddate: string    // 有效期结束 日期或者"长期"
+}
+
+export type FnCallParams = string[] | never[] // calling params
+export type FnParams = [string, FnCallParams] // def for ffi [returnType, [calling param, ...]]
+export interface DllFuncs {
+  [fn: string]: FnParams
 }

@@ -1,12 +1,8 @@
-import { tmpdir } from 'os'
-
 import {
-  FfiDef,
+  DllFuncs,
   IDData,
   Options,
 } from './model'
-
-export const tmpDir = tmpdir()
 
 // 初始化参数
 export const initialOpts: Options = {
@@ -22,7 +18,8 @@ export const idData: IDData = {
   samid: '',  // SAM id
 }
 
-export const ffiDef: FfiDef = {
+
+export const dllFuncs: DllFuncs = {
   SDT_OpenPort: ['int', ['int'] ],   // 查找设备端口
   SDT_ClosePort: ['int', ['int'] ],  // 关闭端口
   SDT_StartFindIDCard: ['int', ['int', 'pointer', 'int'] ],  // 找卡 port,0,0
@@ -35,7 +32,7 @@ export const ffiDef: FfiDef = {
   SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
 }
 
-export const apiImgMethod: FfiDef = {
+export const dllImgFuncs: DllFuncs = {
   GetBmp: ['int', ['string', 'int'] ],   // 读取大头像
 }
 

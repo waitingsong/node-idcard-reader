@@ -7,25 +7,26 @@ import {
   isFileExists,
   join,
   normalize,
+  tmpdir,
 } from '../shared/index'
 
 import {
-  ffiDef,
+  dllFuncs,
   initialOpts,
   nationMap,
-  tmpDir,
 } from './config'
 import {
   DataBase,
   Device,
   DeviceOptions,
-  DllMethod,
+  DllFuncsModel,
   IDData,
   Options,
   RawData,
 } from './model'
 
 
+const tmpDir = tmpdir()
 
 export async function init(args: Options): Promise<Device[]> {
   const opts = <DeviceOptions> { ...initialOpts, ...args }
@@ -38,8 +39,8 @@ export async function init(args: Options): Promise<Device[]> {
   opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string'
     ? normalize(opts.imgSaveDir)
     : join(tmpDir, 'idcard-reader')
-  opts.debug = !! opts.debug
-  opts.searchAll = !! opts.searchAll
+  opts.debug = !!opts.debug
+  opts.searchAll = !!opts.searchAll
 
   if (typeof opts.findCardRetryTimes === 'undefined' || isNaN(opts.findCardRetryTimes) || opts.findCardRetryTimes < 0) {
     opts.findCardRetryTimes = 5
@@ -47,7 +48,7 @@ export async function init(args: Options): Promise<Device[]> {
   logger(opts, opts.debug)
 
   await validateDllFiles(opts)
-  const apib = ffi.Library(opts.dllTxt, ffiDef)
+  const apib = ffi.Library(opts.dllTxt, dllFuncs)
   const devices = findDeviceList(opts, apib)
 
   if (devices && devices.length) {
@@ -103,7 +104,7 @@ async function validateDllFiles(opts: Options): Promise<void> {
 
 
 async function testWrite(dir: string | void): Promise<void> {
-  if (! dir) {
+  if (!dir) {
     throw new Error('value of imgSaveDir empty')
   }
   if (! await isDirExists(dir)) {
@@ -113,7 +114,7 @@ async function testWrite(dir: string | void): Promise<void> {
   // logger('imgSaveDir: ' + dir)
 }
 
-function findDeviceList(options: DeviceOptions, apib: DllMethod): Device[] {
+function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
   const arr: Device[] = []
 
   // 必须先检测usb端口
@@ -135,7 +136,7 @@ function findDeviceList(options: DeviceOptions, apib: DllMethod): Device[] {
       disconnectDevice(device)
 
       arr.push(device)
-      if (! options.searchAll) {
+      if (!options.searchAll) {
         break
       }
     }
@@ -160,7 +161,7 @@ function findDeviceList(options: DeviceOptions, apib: DllMethod): Device[] {
       disconnectDevice(device)
 
       arr.push(device)
-      if (! options.searchAll) {
+      if (!options.searchAll) {
         break
       }
     }
