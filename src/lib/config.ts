@@ -18,6 +18,11 @@ export const idData: IDData = {
   samid: '',  // SAM id
 }
 
+export {
+  IDData,
+  Options,
+}
+
 
 export const dllFuncs: DllFuncs = {
   SDT_OpenPort: ['int', ['int'] ],   // 查找设备端口
