@@ -76,10 +76,11 @@ export async function createDir(path: string): Promise<void> {
     throw new Error('value of path param invalid')
   }
   else {
+    path = normalize(path)  // ! required for '.../.myca' under win32
     /* istanbul ignore else */
     if (!await isDirExists(path)) {
       await path.split(sep).reduce(
-        async (parentDir, childDir) => {
+        async (parentDir: Promise<string>, childDir: string) => {
           const curDir = pathResolve(await parentDir, childDir)
 
           await isPathAcessible(curDir) || await mkdirAsync(curDir, 0o755)
@@ -102,6 +103,7 @@ export async function createFile(file: string, data: any, options?: WriteFileOpt
   if (! await isDirExists(path)) {
     await createDir(path)
   }
+  file = normalize(file)
 
   /* istanbul ignore else */
   if (!await isFileExists(file)) {
