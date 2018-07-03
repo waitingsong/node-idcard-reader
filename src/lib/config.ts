@@ -34,7 +34,7 @@ export const dllFuncs: DllFuncs = {
   SDT_ResetSAM: ['int', ['int', 'int'] ],   // 重置SAM
   SDT_GetSAMIDToStr: ['int', ['int', 'pointer', 'int'] ], // 读取SAM_V的编号 返回值0x90-成功，其他-失败
   SDT_ReadNewAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ], // 读取追加信息
-  SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
+  // SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
 }
 
 export const dllImgFuncs: DllFuncs = {
