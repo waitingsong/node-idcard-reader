@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import * as idcr from '../lib/index'
 
 
