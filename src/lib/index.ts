@@ -403,11 +403,17 @@ function _genImageName(prefix: string): string {
 }
 
 function getSamid(device: Device): void {
-  const buf = Buffer.alloc(40)
+  const buf = Buffer.alloc(128)
   const res = device.apib.SDT_GetSAMIDToStr(device.port, buf, device.openPort)
 
   if (res === 144) {
-    device.samid = buf.toString('utf8').trim().replace(/\0/g, '')
+    let samid = buf.toString('utf8')
+    const pos = samid.indexOf('\0')
+
+    if (pos >= 0) {
+      samid = samid.slice(0, pos)
+    }
+    device.samid = samid
   }
 }
 
