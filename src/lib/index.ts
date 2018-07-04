@@ -252,6 +252,40 @@ export function selectCard(device: Device): boolean {
   return res === 144 ? true : false
 }
 
+// pick fields from origin text
+export function pickFields(text: string): DataBase {
+  const ret: DataBase = {
+    name: '',
+    gender: 0,
+    genderName: '',
+    nation: '00',
+    nationName: '',
+    birth: '',
+    address: '',
+    idc: '',
+    regorg: '',
+    startdate: '',
+    enddate: '',
+  }
+
+  if (!text || !text.length) {
+    return ret
+  }
+
+  ret.name = text.slice(0, 15).trim()
+  ret.gender = +text.slice(15, 16)
+  ret.nation = text.slice(16, 18) // 民族
+  ret.birth = text.slice(18, 26)  // 16
+  ret.address = text.slice(26, 61).trim()   // 70
+  ret.idc = text.slice(61, 79)  // 身份证号
+  ret.regorg = text.slice(79, 94).trim()   // 签发机关
+  ret.startdate = text.slice(94, 102)
+  ret.enddate = text.slice(102, 110)
+
+  formatBase(ret)
+
+  return ret
+}
 
 function readCard(device: Device): RawData {
   const opts = {
@@ -312,39 +346,7 @@ function retriveData(data: RawData, device: Device): Promise<IDData> {
 }
 
 function _retriveText(data: Buffer): DataBase {
-  const s: string = data && data.byteLength ? data.toString('ucs2') : ''
-  const i: DataBase = {
-    name: '',
-    gender: 0,
-    genderName: '',
-    nation: '00',
-    nationName: '',
-    birth: '',
-    address: '',
-    idc: '',
-    regorg: '',
-    startdate: '',
-    enddate: '',
-  }
-
-  if (!s || !s.length) {
-    return i
-  }
-
-  i.name = s.slice(0, 15).trim()
-  i.gender = +s.slice(15, 16)
-  i.nation = s.slice(16, 18) // 民族
-  i.birth = s.slice(18, 26)  // 16
-  i.address = s.slice(26, 61).trim()   // 70
-  i.idc = s.slice(61, 79)  // 身份证号
-  i.regorg = s.slice(79, 94).trim()   // 签发机关
-  i.startdate = s.slice(94, 102)
-  i.enddate = s.slice(102, 110)
-
-  formatBase(i)
-  // console.log(i)
-
-  return i
+  return pickFields(data && data.byteLength ? data.toString('ucs2') : '')
 }
 
 function formatBase(base: DataBase): void {
