@@ -142,6 +142,10 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
     }
   }
 
+  if (!options.searchAll && arr.length) {
+    return arr
+  }
+
   // 检测串口
   for (let i = 1; i <= 16; i++) {
     if (apib.SDT_OpenPort(i) === 144) {
@@ -166,6 +170,7 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
       }
     }
   }
+
   return arr
 }
 
