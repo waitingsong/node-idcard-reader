@@ -50,10 +50,10 @@
     "all": true
   },
   "dependencies": {
-    "ffi": "^2.2.0"
+    "ffi": "git+https://github.com/node-ffi/node-ffi.git"
   },
   "devDependencies": {
-    "@types/ffi": "^0.2.0",
+    "@types/ffi": "*",
     "@types/mocha": "^5.2.2",
     "@types/node": "^10.3.2",
     "@types/power-assert": "^1.5.0",
