@@ -50,7 +50,8 @@
     "all": true
   },
   "dependencies": {
-    "ffi": "git+https://github.com/node-ffi/node-ffi.git"
+    "ffi": "git+https://github.com/node-ffi/node-ffi.git",
+    "rxjs": ">=6.2.0"
   },
   "devDependencies": {
     "@types/ffi": "*",
