@@ -2,7 +2,7 @@
   "compilerOptions": {
     "alwaysStrict": true,
     "charset": "utf8",
-    "declaration": true, 
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": false,
@@ -11,13 +11,14 @@
     "moduleResolution": "node",
     "newLine": "lf",
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./dist", 
+    "outDir": "./dist",
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": false,
-    "strict": true, 
+    "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
+    "noUnusedLocals": true,
     "target": "ES2017"
   },
   "include": [
@@ -27,6 +28,7 @@
     "asset/",
     "dist/",
     "test/",
+    "/test_browser*",
     "node_modules*",
     "**/*.d.ts",
     "**/*.spec.ts"
