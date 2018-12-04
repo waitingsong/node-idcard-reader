@@ -7,7 +7,7 @@ export interface Options {
   searchAll?: boolean // search all available device , stop searching at first device found if false
 }
 
-// dll 接口函数类型
+/* sdtapi.dll 接口方法类型 */
 export interface DllFuncsModel {
   SDT_OpenPort(port: number): number // 查找设备并打开端口
   SDT_ClosePort(port: number): number  // 关闭端口
@@ -26,6 +26,11 @@ export interface DllFuncsModel {
   // SDT_ReadAllAppMsg(port: number, pucAppMsg: Buffer, puiAppMsgLen: Buffer, iIfOpen: number): number
 }
 
+/* WltRS.dll 接口方法类型 */
+export interface WltRsModel {
+  /* 读取头像照片 */
+  GetBmp(fileName: string, intf: number): number
+}
 
 export interface DeviceOptions extends Options {
   dllImage: string   // path of wltrs.dll 可空则不处理头像
@@ -44,6 +49,7 @@ export interface Device {
   samid: string      // SAM id
   options: DeviceOptions
   apib: DllFuncsModel
+  apii: WltRsModel | null
 }
 
 export interface RawData {

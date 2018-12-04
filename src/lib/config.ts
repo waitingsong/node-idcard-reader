@@ -38,18 +38,20 @@ export const dllFuncs: DllFuncs = {
 }
 
 export const dllImgFuncs: DllFuncs = {
-  /**
-   * 0 调用sdtapi.dll错误,
-   * 1 正常
-   * -1 相片解码错误
-   * -2 wlt文件后缀错误
-   * -3 wlt文件打开错误
-   * -4 wlt文件格式错误
-   * -5 软件未授权
-   * -6 设备连接错误
-   */
-  GetBmp: ['int', ['string', 'int'] ],   // 读取大头像
+  /* 解码头像 */
+  GetBmp: ['int', ['string', 'int'] ],
 }
+
+export const GetBmpResMap = new Map([
+  [0, '调用sdtapi.dll错误'],
+  [1, '正常'],
+  [-1, '相片解码错误'],
+  [-2, 'wlt文件后缀错误'],
+  [-3, 'wlt文件打开错误'],
+  [-4, 'wlt文件格式错误'],
+  [-5, 'WltRS.dll 文件与机具不匹配或软件未授权'],
+  [-6, '设备连接错误'],
+])
 
 
 export const nationMap: Map<string, string> = new Map([

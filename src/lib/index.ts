@@ -15,6 +15,7 @@ import {
   dllImgFuncs,
   initialOpts,
   nationMap,
+  GetBmpResMap,
 } from './config'
 import {
   DataBase,
@@ -129,6 +130,7 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
         samid: '',
         options,
         apib,
+        apii: null,
       }
 
       logger(`Found device at usb port: ${i}`, options.debug)
@@ -158,6 +160,7 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
         samid: '',
         options,
         apib,
+        apii: null,
       }
 
       logger(`Found device at serial port: ${i}`, options.debug)
@@ -335,6 +338,8 @@ function retriveData(data: RawData, device: Device): Promise<IDData> {
   ret.base = _retriveText(data.text)
 
   if (opts.dllImage) {
+    device.apii = ffi.Library(opts.dllImage, dllImgFuncs)
+
     return decodeImage(device, data.image).then(str => {
       ret.imagePath = str ? str : ''
       return ret
@@ -377,30 +382,30 @@ async function decodeImage(device: Device, buf: Buffer): Promise<string> {
   const opts = device.options
 
   if (!opts.dllImage) {
-    return Promise.resolve('')
+    return ''
   }
-  const apii = ffi.Library(opts.dllImage, dllImgFuncs)
 
-  if (!apii) {
-    return Promise.resolve('')
+  if (! device.apii) {
+    return ''
   }
-  const foo = await createFile(tmpname, buf)
-  const ipath = normalize(name + '.bmp')
-  logger(['resolve image file:', ipath], device.options.debug)
+  await createFile(tmpname, buf)
 
-  const res = apii.GetBmp(tmpname, device.useUsb ? 2 : 1)
+  // covert wlt file to bmp
+  const res = device.apii.GetBmp(tmpname, device.useUsb ? 2 : 1)
   logger(['resolve image res:', res], device.options.debug)
-  logger('image tmp has been saved:' + tmpname, device.options.debug)
 
+  if (res === 1) {
+    const ipath = normalize(name + '.bmp')
+    logger('image tmp has been saved:' + ipath, device.options.debug)
 
-  return ipath
-  // return createFile(tmpname, buf).then(() => {
-  //   const ipath = normalize(name + '.bmp')
-  //   logger(['resolve image file:', ipath], device.options.debug)
-
-  //   return ipath
-  // })
+    return ipath
+  }
+  else {
+    logger(['decode wlt to bmp res:', GetBmpResMap.get(res)], true)
+    return ''
+  }
 }
+
 
 function _genImageName(prefix: string): string {
   const d = new Date()
