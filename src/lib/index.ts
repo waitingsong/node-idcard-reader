@@ -12,6 +12,7 @@ import {
 
 import {
   dllFuncs,
+  dllImgFuncs,
   initialOpts,
   nationMap,
 } from './config'
@@ -369,7 +370,7 @@ function formatBase(base: DataBase): void {
 }
 
 
-function decodeImage(device: Device, buf: Buffer): Promise<string> {
+async function decodeImage(device: Device, buf: Buffer): Promise<string> {
   // console.log(buf.slice(0, 10))
   const name = join(device.options.imgSaveDir, _genImageName('idcrimage_'))
   const tmpname = name + '.wlt'
@@ -378,21 +379,27 @@ function decodeImage(device: Device, buf: Buffer): Promise<string> {
   if (!opts.dllImage) {
     return Promise.resolve('')
   }
-  // const apii = ffi.Library(opts.dllImage, apiImgDll)
+  const apii = ffi.Library(opts.dllImage, dllImgFuncs)
 
-  // if (!apii) {
-  //   return Promise.resolve('')
-  // }
-  // const res = apii.GetBmp(tmpname, device.useUsb)
-  // logger(['resolve image res:', res], device.options.debug)
+  if (!apii) {
+    return Promise.resolve('')
+  }
+  const foo = await createFile(tmpname, buf)
+  const ipath = normalize(name + '.bmp')
+  logger(['resolve image file:', ipath], device.options.debug)
+
+  const res = apii.GetBmp(tmpname, device.useUsb ? 2 : 1)
+  logger(['resolve image res:', res], device.options.debug)
   logger('image tmp has been saved:' + tmpname, device.options.debug)
 
-  return createFile(tmpname, buf).then(() => {
-    const ipath = normalize(name + '.bmp')
-    logger(['resolve image file:', ipath], device.options.debug)
 
-    return ipath
-  })
+  return ipath
+  // return createFile(tmpname, buf).then(() => {
+  //   const ipath = normalize(name + '.bmp')
+  //   logger(['resolve image file:', ipath], device.options.debug)
+
+  //   return ipath
+  // })
 }
 
 function _genImageName(prefix: string): string {
