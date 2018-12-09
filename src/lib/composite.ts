@@ -207,10 +207,16 @@ function genParamValidDate(
   font: string,
 ): string {
 
-  start = start ? start.trim() : ''
+  const p1 = start
+    ? start.slice(0, 4) + '.' + start.slice(4, 6) + '.' + start.slice(6, 8)
+    : ''
   /* istanbul ignore else */
-  if (!start) {
+  if (!p1) {
     throw new TypeError('value invalid')
   }
-  return `-fill "${txtColor}" -font "${font}" -pointsize 32 -kerning 1.6 -draw "text 413,1215 '${start}-${end}'"`
+  const p2 = Number.isNaN(+end)
+    ? end
+    : end.slice(0, 4) + '.' + end.slice(4, 6) + '.' + end.slice(6, 8)
+
+  return `-fill "${txtColor}" -font "${font}" -pointsize 32 -kerning 1.6 -draw "text 413,1215 '${p1}-${p2}'"`
 }
