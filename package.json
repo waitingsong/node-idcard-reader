@@ -51,7 +51,8 @@
   },
   "dependencies": {
     "ffi": "git+https://github.com/node-ffi/node-ffi.git",
-    "rxjs": ">=6.2.0"
+    "rxjs": ">=6.2.0",
+    "rxrunscript": "^2.1.0"
   },
   "devDependencies": {
     "@types/ffi": "*",

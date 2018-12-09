@@ -1,10 +1,39 @@
-export interface Options {
-  dllTxt: string // path of sdtapi.dll
-  dllImage?: string | undefined   // path of wltrs.dll 可空则不处理头像
-  findCardRetryTimes?: number    // 找卡重试数量，间隔1sec
-  imgSaveDir?: string            // 头像图片保存目录 空则使用 系统临时目录/idcard-reader
-  debug?: boolean
-  searchAll?: boolean // search all available device , stop searching at first device found if false
+export type Options = Partial<DeviceOpts> & Partial<CompositeOpts>
+
+export interface Config {
+  appDir: string  // base directory of this module
+  tmpDir: string
+}
+
+export interface DeviceOpts {
+  /* path of sdtapi.dll */
+  dllTxt: string
+  /* path of wltrs.dll 空则不处理头像 */
+  dllImage: string
+  /* 找卡重试数量，间隔1sec */
+  findCardRetryTimes: number
+  /* 头像图片保存目录 空则使用 系统临时目录/idcard-reader */
+  imgSaveDir: string
+  debug: boolean
+  /* search all available device , stop searching at first device found if false */
+  searchAll: boolean
+}
+
+export interface CompositeOpts {
+  /* whether composeite image. Default false */
+  compositeImg: boolean,
+  /* 合成图片保存目录. 默认 系统临时目录/idcard-reader */
+  compositeDir: string
+  /* 1-100 (percent) Default 35 */
+  compositeQuality: number
+  /* output image full path name. Default jpg */
+  compositeType: 'bmp' | 'gif' | 'jpg' | 'png' | 'webp'
+  /* CSS style. Default: #303030 */
+  textColor: string
+  /* font path */
+  fontHwxhei: string
+  fontOcrb: string
+  fontSimhei: string
 }
 
 /* sdtapi.dll 接口方法类型 */
@@ -32,39 +61,48 @@ export interface WltRsModel {
   GetBmp(fileName: string, intf: number): number
 }
 
-export interface DeviceOptions extends Options {
-  dllImage: string   // path of wltrs.dll 可空则不处理头像
-  findCardRetryTimes: number    // 找卡重试数量，间隔1sec
-  imgSaveDir: string            // 头像图片保存目录 空则使用 系统临时目录/idcard-reader
-  debug: boolean
-  searchAll: boolean // search all available device , stop searching at first device found if false
-}
 
 // 读卡设置
 export interface Device {
-  port: number   // device connect port
-  useUsb: boolean    // device access mode usb or serial
-  openPort: number   // port reopen during call function every time
-  inUse: boolean // device in use
-  samid: string      // SAM id
-  options: DeviceOptions
+  /* device connect port */
+  port: number
+  /* device access mode usb or serial */
+  useUsb: boolean
+  /* port reopen during call function every time */
+  openPort: number
+  /* device in use */
+  inUse: boolean
+  /* SAM id */
+  samid: string
+  options: DeviceOpts
+  compositeOpts: CompositeOpts
   apib: DllFuncsModel
   apii: WltRsModel | null
 }
 
 export interface RawData {
-  err: number    // 读取错误标识 0表示读取成功
-  code: number    // 读卡结果码
-  text: Buffer   // 文本信息
-  image: Buffer  // 图片信息 需要解码
-  imagePath: string  // 图片文件地址
+  /* 读取错误标识 0表示读取成功 */
+  err: number
+  /* 读卡结果码 */
+  code: number
+  /* 文本信息 */
+  text: Buffer
+  /* 头像图片信息 需要解码 */
+  image: Buffer
+  /* 头像图片文件地址 */
+  imagePath: string
 }
 
-// tslint:disable-next-line
+// tslint:disable-next-line: interface-name
 export interface IDData {
-  base: DataBase | null // object
-  imagePath: string  // image file path
-  samid: string  // SAM id
+  /* object */
+  base: DataBase | null
+  /* image file path */
+  imagePath: string
+  /* SAM id */
+  samid: string
+  /* 合成图片文件路径 */
+  compositePath: string
 }
 
 export interface DataBase {

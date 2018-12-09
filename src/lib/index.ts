@@ -1,4 +1,5 @@
 import * as ffi from 'ffi'
+import { concatMap } from 'rxjs/operators'
 
 import {
   createDir,
@@ -7,9 +8,9 @@ import {
   isFileExists,
   join,
   normalize,
-  tmpdir,
 } from '../shared/index'
 
+import { handleAvatar, handleBaseInfo } from './composite'
 import {
   dllFuncs,
   dllImgFuncs,
@@ -18,9 +19,10 @@ import {
   GetBmpResMap,
 } from './config'
 import {
+  CompositeOpts,
   DataBase,
   Device,
-  DeviceOptions,
+  DeviceOpts,
   DllFuncsModel,
   IDData,
   Options,
@@ -28,30 +30,58 @@ import {
 } from './model'
 
 
-const tmpDir = tmpdir()
 
 export async function init(args: Options): Promise<Device[]> {
-  const opts = <DeviceOptions> { ...initialOpts, ...args }
+  const opts = <typeof initialOpts> { ...initialOpts, ...args }
+  const deviceOpts = <DeviceOpts> {}
+  const compositeOpts = <CompositeOpts> {}
 
-  if (typeof opts.dllTxt === 'undefined' || !opts.dllTxt) {
+  if (! opts.dllTxt) {
     return Promise.reject('params dllTxt undefined or blank')
   }
-  opts.dllTxt = normalize(opts.dllTxt)
-  opts.dllImage = opts.dllImage ? normalize(opts.dllImage) : ''
-  opts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string'
+  deviceOpts.dllTxt = normalize(opts.dllTxt)
+  deviceOpts.dllImage = opts.dllImage ? normalize(opts.dllImage) : ''
+  deviceOpts.imgSaveDir = opts.imgSaveDir && typeof opts.imgSaveDir === 'string'
     ? normalize(opts.imgSaveDir)
-    : join(tmpDir, 'idcard-reader')
-  opts.debug = !!opts.debug
-  opts.searchAll = !!opts.searchAll
+    : initialOpts.imgSaveDir
+  deviceOpts.debug = !!opts.debug
+  deviceOpts.searchAll = !!opts.searchAll
 
-  if (typeof opts.findCardRetryTimes === 'undefined' || isNaN(opts.findCardRetryTimes) || opts.findCardRetryTimes < 0) {
-    opts.findCardRetryTimes = 5
+  if (isNaN(deviceOpts.findCardRetryTimes) || deviceOpts.findCardRetryTimes < 0) {
+    deviceOpts.findCardRetryTimes = initialOpts.findCardRetryTimes
   }
+
+  compositeOpts.compositeImg = opts.dllImage && opts.compositeImg
+    ? true
+    : initialOpts.compositeImg
+  compositeOpts.compositeDir = opts.compositeDir && typeof opts.compositeDir === 'string'
+    ? normalize(opts.compositeDir)
+    : initialOpts.compositeDir
+  compositeOpts.compositeQuality = typeof opts.compositeQuality === 'number' &&
+    opts.compositeQuality >= 1 && opts.compositeQuality <= 100
+      ? opts.compositeQuality
+      : initialOpts.compositeQuality
+  compositeOpts.textColor = opts.textColor ? opts.textColor : initialOpts.textColor
+
+  if (opts.compositeType) {
+    if (! ['bmp', 'gif', 'jpg', 'png', 'webp'].includes(opts.compositeType)) {
+      throw new TypeError('compositeType value invalid')
+    }
+    compositeOpts.compositeType = opts.compositeType
+  }
+  else {
+    compositeOpts.compositeType = initialOpts.compositeType
+  }
+  compositeOpts.fontHwxhei = opts.fontHwxhei
+  compositeOpts.fontOcrb = opts.fontOcrb
+  compositeOpts.fontSimhei = opts.fontSimhei
+
+
   logger(opts, opts.debug)
 
-  await validateDllFiles(opts)
+  await validateDllFiles(deviceOpts)
   const apib = ffi.Library(opts.dllTxt, dllFuncs)
-  const devices = findDeviceList(opts, apib)
+  const devices = findDeviceList(deviceOpts, apib, compositeOpts)
 
   if (devices && devices.length) {
     return devices
@@ -77,10 +107,15 @@ export async function read(device: Device): Promise<IDData | void> {
         const raw = readCard(device)
 
         if (!raw.err) {
-          const ret = retriveData(raw, device)
-
+          const iddata = retriveData(raw, device)
           disconnectDevice(device)
-          return ret
+
+          return iddata.then(async data => {
+            data.compositePath = data && device.options.dllImage && device.compositeOpts.compositeImg === true
+              ? await composite(data, device.compositeOpts)
+              : ''
+            return data
+          })
         }
       }
     }
@@ -92,7 +127,22 @@ export async function read(device: Device): Promise<IDData | void> {
 }
 
 
-async function validateDllFiles(opts: Options): Promise<void> {
+/* Composite image with data. Return result path */
+export async function composite(data: IDData, options: CompositeOpts): Promise<string> {
+  if (! data || ! data.base) {
+    throw new TypeError('data value invalid')
+  }
+  const ret = handleAvatar(data.imagePath).pipe(
+    concatMap(avatar => {
+      return handleBaseInfo(<DataBase> data.base, avatar, options)
+    }),
+  )
+
+  return ret.toPromise()
+}
+
+
+async function validateDllFiles(opts: DeviceOpts): Promise<void> {
   if (! await isFileExists(opts.dllTxt)) {
     throw new Error('File not exists: ' + opts.dllTxt)
   }
@@ -116,7 +166,7 @@ async function testWrite(dir: string | void): Promise<void> {
   // logger('imgSaveDir: ' + dir)
 }
 
-function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
+function findDeviceList(options: Device['options'], apib: DllFuncsModel, compositeOpts: CompositeOpts): Device[] {
   const arr: Device[] = []
 
   // 必须先检测usb端口
@@ -129,6 +179,7 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
         inUse: true,
         samid: '',
         options,
+        compositeOpts,
         apib,
         apii: null,
       }
@@ -159,6 +210,7 @@ function findDeviceList(options: DeviceOptions, apib: DllFuncsModel): Device[] {
         inUse: true,
         samid: '',
         options,
+        compositeOpts,
         apib,
         apii: null,
       }

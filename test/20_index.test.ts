@@ -3,7 +3,7 @@
 import { basename } from 'path'
 import * as assert from 'power-assert'
 
-import * as idcr from '../src/lib/index'
+import * as idcr from '../src/index'
 import { Options } from '../src/lib/model'
 
 
@@ -16,6 +16,10 @@ describe(filename, () => {
       dllTxt: 'c:/sdtapi.dll',
       dllImage: 'c:/wltrs.dll',
       debug: false,
+      compositeImg: true,
+      fontHwxhei: 'c:/Windows/Fonts/hwxhei.ttf',
+      fontOcrb: 'c:/Windows/Fonts/ocrb10bt.ttf',
+      fontSimhei: 'c:/Windows/Fonts/simhei.ttf',
     }
 
     try {
@@ -31,6 +35,7 @@ describe(filename, () => {
       assert(!! ret, 'IDData invalid')
       assert(ret && ret.base && ret.base.name, 'name of IDData empty')
       assert(ret && ret.base && ret.base.idc, 'idc of IDData empty')
+      assert(ret && ret.base && ret.compositePath, 'composite image path empty')
     }
     catch (ex) {
       assert(false, ex)

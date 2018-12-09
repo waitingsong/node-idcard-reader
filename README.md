@@ -73,5 +73,9 @@ idc-reader
 - `gyp` 需要编译为与 dll 相同的 32/64 位版本（通常为32位）
 
 
+## 资源
+- 若需合成图片则自行准备以下字体 `华文细黑（hwxhei.ttf）` `黑体（simhei.ttf）` `OCR-B 10 BT（ocrb10bt.ttf）`
+- 感谢 [身份证模板](https://github.com/airob0t/idcardgenerator)
+
 ## License
 [MIT](LICENSE)
