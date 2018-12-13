@@ -4,6 +4,7 @@ import {
 } from '../shared/index'
 
 import {
+  CompositeOpts,
   Config,
   DllFuncs,
   IDData,
@@ -16,15 +17,7 @@ export const config: Config = {
   tmpDir: join(tmpdir(), 'idcard-reader'),
 }
 
-// 初始化参数
-export const initialOpts: Required<Options> = {
-  dllTxt: '',
-  dllImage: '',
-  findCardRetryTimes: 5,
-  imgSaveDir: config.tmpDir,
-  debug: false,
-  searchAll: false,
-
+export const initialCompositeOpts: CompositeOpts = {
   compositeImg: false,
   compositeDir: config.tmpDir,
   compositeQuality: 35,
@@ -33,6 +26,17 @@ export const initialOpts: Required<Options> = {
   fontHwxhei: '',
   fontOcrb: '',
   fontSimhei: '',
+}
+
+// 初始化参数
+export const initialOpts: Required<Options> = {
+  dllTxt: '',
+  dllImage: '',
+  findCardRetryTimes: 5,
+  imgSaveDir: config.tmpDir,
+  debug: false,
+  searchAll: false,
+  ...initialCompositeOpts,
 }
 
 export const idData: IDData = {
