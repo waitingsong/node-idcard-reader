@@ -1,7 +1,7 @@
 {
   "name": "idcard-reader",
   "author": "waiting",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "通过二代身份证机具读取二代身份证信息",
   "keywords": [
     "idcard",
