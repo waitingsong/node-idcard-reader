@@ -21,7 +21,7 @@ export interface DeviceOpts {
 
 export interface CompositeOpts {
   /* whether composeite image. Default false */
-  compositeImg: boolean,
+  useComposite: boolean,
   /* 合成图片保存目录. 默认 系统临时目录/idcard-reader */
   compositeDir: string
   /* 1-100 (percent) Default 35 */

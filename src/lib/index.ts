@@ -52,9 +52,9 @@ export async function init(args: Options): Promise<Device[]> {
     deviceOpts.findCardRetryTimes = initialOpts.findCardRetryTimes
   }
 
-  compositeOpts.compositeImg = opts.dllImage && opts.compositeImg
+  compositeOpts.useComposite = opts.dllImage && opts.useComposite
     ? true
-    : initialOpts.compositeImg
+    : initialOpts.useComposite
   compositeOpts.compositeDir = opts.compositeDir && typeof opts.compositeDir === 'string'
     ? normalize(opts.compositeDir)
     : initialOpts.compositeDir
@@ -112,7 +112,7 @@ export async function read(device: Device): Promise<IDData | void> {
           disconnectDevice(device)
 
           return iddata.then(async data => {
-            data.compositePath = data && device.options.dllImage && device.compositeOpts.compositeImg === true
+            data.compositePath = data && device.options.dllImage && device.compositeOpts.useComposite === true
               ? await composite(data, device.compositeOpts)
               : ''
             return data

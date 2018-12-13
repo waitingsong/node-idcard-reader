@@ -18,7 +18,7 @@ export const config: Config = {
 }
 
 export const initialCompositeOpts: CompositeOpts = {
-  compositeImg: false,
+  useComposite: false,
   compositeDir: config.tmpDir,
   compositeQuality: 35,
   compositeType: 'jpg',
