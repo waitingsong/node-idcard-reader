@@ -46,6 +46,7 @@ export async function init(args: Options): Promise<Device[]> {
     : initialOpts.imgSaveDir
   deviceOpts.debug = !!opts.debug
   deviceOpts.searchAll = !!opts.searchAll
+  deviceOpts.findCardRetryTimes = +opts.findCardRetryTimes
 
   if (isNaN(deviceOpts.findCardRetryTimes) || deviceOpts.findCardRetryTimes < 0) {
     deviceOpts.findCardRetryTimes = initialOpts.findCardRetryTimes
