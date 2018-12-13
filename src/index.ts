@@ -5,3 +5,4 @@ config.appDir = __dirname + '/..'
 
 export * from './lib/index'
 export * from './lib/model'
+export { initialCompositeOpts, initialOpts, nationMap } from './lib/config'
