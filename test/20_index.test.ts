@@ -16,7 +16,7 @@ describe(filename, () => {
       dllTxt: 'c:/sdtapi.dll',
       dllImage: 'c:/wltrs.dll',
       debug: false,
-      compositeImg: true,
+      useComposite: true,
       fontHwxhei: 'c:/Windows/Fonts/hwxhei.ttf',
       fontOcrb: 'c:/Windows/Fonts/ocrb10bt.ttf',
       fontSimhei: 'c:/Windows/Fonts/simhei.ttf',
