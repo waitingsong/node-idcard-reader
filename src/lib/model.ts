@@ -95,9 +95,9 @@ export interface RawData {
 
 // tslint:disable-next-line: interface-name
 export interface IDData {
-  /* object */
+  /* base info */
   base: DataBase | null
-  /* image file path */
+  /* avatar image file path */
   imagePath: string
   /* SAM id */
   samid: string
@@ -106,18 +106,29 @@ export interface IDData {
 }
 
 export interface DataBase {
-  name: string       // 姓名
-  gender: number // 1男，2女
+  /** 姓名 */
+  name: string
+  /** 1男，2女 */
+  gender: number
   genderName: string
-  nation: string // 民族代码
-  nationName: string // 民族中文
-  birth: string  // 出生日期
-  address: string   // 住址
-  idc: string  // 身份证号
-  regorg: string   // 签发机关
-  startdate: string  // 有效期开始
-  enddate: string    // 有效期结束 日期或者"长期"
+  /** 民族代码 */
+  nation: string
+  /** 民族中文 */
+  nationName: string
+  /** 出生日期 */
+  birth: string
+  /** 住址 */
+  address: string
+  /** 身份证号 */
+  idc: string
+  /** 签发机关 */
+  regorg: string
+  /** 有效期开始 */
+  startdate: string
+  /** 有效期结束 日期或者'长期' */
+  enddate: string
 }
+
 
 export type FnCallParams = string[] | never[] // calling params
 export type FnParams = [string, FnCallParams] // def for ffi [returnType, [calling param, ...]]
