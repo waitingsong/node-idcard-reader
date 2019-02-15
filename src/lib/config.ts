@@ -1,7 +1,7 @@
 import {
   join,
   tmpdir,
-} from '../shared/index'
+} from '@waiting/shared-core'
 
 import {
   CompositeOpts,

@@ -1,11 +1,10 @@
+import {
+  join, normalize, unlinkAsync,
+} from '@waiting/shared-core'
 import { Observable } from 'rxjs'
 import { mapTo, tap } from 'rxjs/operators'
 // import run from 'rxrunscript'
 import { run } from 'rxrunscript'
-
-import {
-  join, normalize, unlinkAsync,
-} from '../shared/index'
 
 import {
   config,

@@ -1,14 +1,13 @@
-import * as ffi from 'ffi'
-import { concatMap } from 'rxjs/operators'
-
 import {
-  createDir,
-  createFile,
+  createDirAsync,
+  createFileAsync,
   isDirExists,
   isFileExists,
   join,
   normalize,
-} from '../shared/index'
+} from '@waiting/shared-core'
+import * as ffi from 'ffi'
+import { concatMap } from 'rxjs/operators'
 
 import { handleAvatar, handleBaseInfo } from './composite'
 import {
@@ -161,8 +160,8 @@ async function testWrite(dir: string | void): Promise<void> {
     throw new Error('value of imgSaveDir empty')
   }
   if (! await isDirExists(dir)) {
-    await createDir(dir)
-    await createFile(join(dir, '.test'), 'idctest') // 创建测试文件
+    await createDirAsync(dir)
+    await createFileAsync(join(dir, '.test'), 'idctest') // 创建测试文件
   }
   // logger('imgSaveDir: ' + dir)
 }
@@ -441,7 +440,7 @@ async function decodeImage(device: Device, buf: Buffer): Promise<string> {
   if (! device.apii) {
     return ''
   }
-  await createFile(tmpname, buf)
+  await createFileAsync(tmpname, buf)
 
   // covert wlt file to bmp
   const res = device.apii.GetBmp(tmpname, device.useUsb ? 2 : 1)
