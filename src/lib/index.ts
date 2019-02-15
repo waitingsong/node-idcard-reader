@@ -7,7 +7,19 @@ import {
   normalize,
 } from '@waiting/shared-core'
 import * as ffi from 'ffi'
-import { concatMap } from 'rxjs/operators'
+import {
+  of,
+  range,
+  timer,
+} from 'rxjs'
+import {
+  concatMap,
+  filter,
+  mapTo,
+  mergeMap,
+  take,
+  tap,
+} from 'rxjs/operators'
 
 import { handleAvatar, handleBaseInfo } from './composite'
 import {
@@ -99,7 +111,6 @@ export async function read(device: Device): Promise<IDData | void> {
 
     try {
       await findCard(device)
-      logger('Found card ', device.options.debug)
       const res = selectCard(device)
       logger('Select card ' + (res ? 'succeed' : 'failed'), device.options.debug)
 
@@ -256,35 +267,32 @@ function disconnectDevice(device: Device): boolean {
   return res === 144 ? true : false
 }
 
-// 找卡
+
 export function findCard(device: Device): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (_findCard(device) === 159) {
-      return resolve()
-    }
-    const opts = device.options
+  const findCardRetryTimes = device.options.findCardRetryTimes
+  const findRet$ = range(0, findCardRetryTimes > 0 ? findCardRetryTimes + 1 : 1).pipe(
+    concatMap((value, index: number) => {
+      if (index > 0 && index >= findCardRetryTimes) {
+        throw new Error(`findCard fail over ${findCardRetryTimes} times`)
+      }
 
-    if (typeof opts.findCardRetryTimes !== 'undefined' && opts.findCardRetryTimes > 0) {
-      let c = 0
-      const intv = setInterval(() => {
-        if (c >= <number> device.options.findCardRetryTimes) {
-          clearInterval(intv)
-          return reject(`findCard fail over ${c} times`)
-        }
-        const res = _findCard(device)
+      // 移动中读取到卡 延迟执行选卡
+      const delay$ = timer(index === 0 ? 0 : 2000)
+      return delay$.pipe(
+        mergeMap(() => of(_findCard(device))),
+      )
+    }),
+  )
+  const ret$ = findRet$.pipe(
+    tap(ret => {
+      logger(`findStatus: ${ret}`, device.options.debug)
+    }),
+    filter(ret => ret === 159),
+    take(1),
+    mapTo(void 0),
+  )
 
-        if (res === 159) {
-          clearInterval(intv)
-          setTimeout(resolve, 4000, 'succeed')  // 移动中读取到卡 延迟执行选卡
-          return
-        }
-        c += 1
-      }, 1000)
-    }
-    else {
-      return reject('No found card')
-    }
-  })
+  return ret$.toPromise()
 }
 
 function _findCard(device: Device): number {
