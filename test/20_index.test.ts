@@ -1,10 +1,10 @@
 /// <reference types="mocha" />
 
+import { Options } from '@waiting/idcard-reader-base'
 import { basename } from 'path'
 import * as assert from 'power-assert'
 
 import * as idcr from '../src/index'
-import { Options } from '../src/lib/model'
 
 
 const filename = basename(__filename)
@@ -15,11 +15,11 @@ describe(filename, () => {
     const opts: Options = {
       dllTxt: 'c:/sdtapi.dll',
       dllImage: 'c:/wltrs.dll',
-      debug: false,
       useComposite: true,
       fontHwxhei: 'c:/Windows/Fonts/hwxhei.ttf',
       fontOcrb: 'c:/Windows/Fonts/ocrb10bt.ttf',
       fontSimhei: 'c:/Windows/Fonts/simhei.ttf',
+      debug: false,
     }
 
     try {
