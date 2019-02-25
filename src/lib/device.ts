@@ -1,12 +1,12 @@
 import {
-  CompositeOpts, RawData,
+  RawData,
 } from '@waiting/idcard-reader-base'
 import { error, info } from '@waiting/log'
 import { dirname } from '@waiting/shared-core'
 import { of, range, timer, Observable } from 'rxjs'
 import { concatMap, defaultIfEmpty, filter, map, mapTo, mergeMap, take, tap } from 'rxjs/operators'
 
-import { Device, DllFuncsModel } from './model'
+import { Device } from './model'
 
 
 export function connectDevice(device: Device, port: number): number {
@@ -32,8 +32,8 @@ export function disconnectDevice(device: Device): boolean {
 
 export function findDeviceList(
   deviceOpts: Device['deviceOpts'],
-  compositeOpts: CompositeOpts,
-  apib: DllFuncsModel,
+  compositeOpts: Device['compositeOpts'],
+  apib: Device['apib'],
 ): Device[] {
   const arr: Device[] = []
 

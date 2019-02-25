@@ -1,10 +1,8 @@
-import {
-  CompositeOpts, DeviceOpts,
-} from '@waiting/idcard-reader-base'
-
+import { Device as DeviceBase } from '@waiting/idcard-reader-base'
+import { FModel as FM } from 'win32-def'
 
 /** sdtapi.dll 接口方法类型 */
-export interface DllFuncsModel {
+export interface DllFuncsModel extends FM.DllFuncsModel {
   /** 查找设备并打开端口 */
   SDT_OpenPort(port: number): number
   /** 关闭端口 */
@@ -27,23 +25,12 @@ export interface DllFuncsModel {
 }
 
 /** WltRS.dll 接口方法类型 */
-export interface WltRsModel {
+export interface WltRsModel extends FM.DllFuncsModel {
   /** 读取头像照片 */
   GetBmp(fileName: string, intf: number): number
 }
 
-
-// 读卡设置
-export interface Device {
+export interface Device extends DeviceBase {
   apib: DllFuncsModel
   apii: WltRsModel | null
-  deviceOpts: DeviceOpts
-  compositeOpts: CompositeOpts
-  /** device in use */
-  inUse: boolean
-  /** device access mode usb or serial */
-  useUsb: boolean
-  openPort: number
-  /** SAM id */
-  // samid: string
 }
