@@ -38,44 +38,19 @@ export function findDeviceList(
   const arr: Device[] = []
 
   if (deviceOpts.port > 0) {
-    const device: Device = {
-      apib,
-      apii: null,
-      deviceOpts,
-      compositeOpts,
-      inUse: false,
-      openPort: 0,
-      useUsb: true,   // 默认USB接口
-    }
-    const port = connectDevice(device, deviceOpts.port)
-    if (port > 0) {
-      device.inUse = true
-      device.openPort = port
-      deviceOpts.debug && info(`Found device at serial/usb port: ${port}`)
-      disconnectDevice(device)
+    // 仅USB接口
+    const device = findDevice(deviceOpts.port, deviceOpts, compositeOpts, apib, true)
+    if (device.openPort > 0) {
       arr.push(device)
     }
   }
   else {
     // 必须先检测usb端口
     for (let i = 1000; i <= 1016; i++) {
-      const device: Device = {
-        apib,
-        apii: null,
-        deviceOpts,
-        compositeOpts,
-        inUse: false,
-        openPort: 0,
-        useUsb: true,
-      }
+      const device = findDevice(i, deviceOpts, compositeOpts, apib, true)
 
-      const port = connectDevice(device, i)
-      if (port > 0) {
+      if (device.openPort > 0) {
         // device.simid = getSamid(device)
-        device.inUse = true
-        device.openPort = port
-        deviceOpts.debug && info(`Found device at usb port: ${port}`)
-        disconnectDevice(device)
         arr.push(device)
         if (!deviceOpts.searchAll) {
           break
@@ -89,22 +64,9 @@ export function findDeviceList(
 
     // 检测串口
     for (let i = 1; i <= 16; i++) {
-      const device: Device = {
-        apib,
-        apii: null,
-        deviceOpts,
-        compositeOpts,
-        inUse: false,
-        openPort: 0,
-        useUsb: false,
-      }
+      const device = findDevice(i, deviceOpts, compositeOpts, apib, false)
 
-      const port = connectDevice(device, i)
-      if (port > 0) {
-        device.inUse = true
-        device.openPort = port
-        deviceOpts.debug && info(`Found device at serial port: ${port}`)
-        disconnectDevice(device)
+      if (device.openPort > 0) {
         arr.push(device)
         if (!deviceOpts.searchAll) {
           break
@@ -114,6 +76,35 @@ export function findDeviceList(
   }
 
   return arr
+}
+
+export function findDevice(
+  openPort: Device['openPort'],
+  deviceOpts: Device['deviceOpts'],
+  compositeOpts: Device['compositeOpts'],
+  apib: Device['apib'],
+  useUsb: Device['useUsb'],
+): Device {
+
+  const device: Device = {
+    apib,
+    apii: null,
+    deviceOpts,
+    compositeOpts,
+    inUse: false,
+    openPort: 0,
+    useUsb,
+  }
+
+  const port = connectDevice(device, openPort)
+  if (port > 0) {
+    device.inUse = true
+    device.openPort = port
+    deviceOpts.debug && info(`Found device at serial/usb port: ${port}`)
+    disconnectDevice(device)
+  }
+
+  return device
 }
 
 
