@@ -158,7 +158,7 @@ export function findCard(device: Device): Observable<boolean> {
       }
 
       // 移动中读取到卡 延迟执行选卡
-      const delay$ = timer(index === 0 ? 0 : 2000)
+      const delay$ = timer(index === 0 ? 0 : 1000)
       return delay$.pipe(
         mergeMap(() => of(_findCard(device))),
       )
