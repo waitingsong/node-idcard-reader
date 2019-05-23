@@ -72,6 +72,7 @@ export async function init(options: Options): Promise<Device[]> {
   const devices = findDeviceList(deviceOpts, compositeOpts, apib)
 
   if (devices && devices.length) {
+    debug && console.info('Found devices:', devices)
     return devices
   }
   else {
