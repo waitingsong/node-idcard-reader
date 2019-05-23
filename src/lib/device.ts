@@ -4,7 +4,7 @@ import {
 import { error, info } from '@waiting/log'
 import { dirname } from '@waiting/shared-core'
 import { of, range, timer, Observable } from 'rxjs'
-import { concatMap, defaultIfEmpty, filter, map, mergeMap, take, tap } from 'rxjs/operators'
+import { concatMap, defaultIfEmpty, filter, map, mergeMap, take, tap, timeout } from 'rxjs/operators'
 
 import { Device } from './model'
 
@@ -117,7 +117,7 @@ export function readDataBase(device: Device): Observable<RawData> {
   // const targetPath = normalize(device.deviceOpts.imgSaveDir + '/').replace(/\\/g, '/')
 
   if (device.deviceOpts.debug) {
-    info('starting reading readCard ret')
+    info('starting reading readCard ')
     // info('IDCard_GetInformation() src path:' + srcDir)
     // info('IDCard_GetInformation() target path:' + targetPath)
   }
@@ -125,7 +125,16 @@ export function readDataBase(device: Device): Observable<RawData> {
   connectDevice(device, device.openPort)
 
   const cardReady$ = findCard(device).pipe(
-    map(() => selectCard(device)),
+    mergeMap(found => {
+      if (found) {
+        return of(selectCard(device)).pipe(
+          timeout(1500),
+        )
+      }
+      else {
+        throw new Error('findCard() 未能找到指定设备')
+      }
+    }),
     tap(ready => {
       if (! ready) {
         throw new Error('二代证无效，请确保证件处于机具读卡区域内')
