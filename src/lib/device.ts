@@ -4,7 +4,7 @@ import {
 import { error, info } from '@waiting/log'
 import { dirname } from '@waiting/shared-core'
 import { of, range, timer, Observable } from 'rxjs'
-import { concatMap, defaultIfEmpty, filter, map, mapTo, mergeMap, take, tap } from 'rxjs/operators'
+import { concatMap, defaultIfEmpty, filter, map, mergeMap, take, tap } from 'rxjs/operators'
 
 import { Device } from './model'
 
@@ -170,8 +170,8 @@ export function findCard(device: Device): Observable<boolean> {
     }),
     filter(ret => ret === 159),
     take(1),
-    mapTo(true),
-    defaultIfEmpty(false),
+    defaultIfEmpty(0),
+    map(ret => ret > 0 ? true : false),
   )
 
   return ret$
