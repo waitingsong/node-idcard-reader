@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-# [4.5.0](https://github.com/waitingsong/node-idcard-reader/compare/v4.4.3...v4.5.0) (2019-05-23)
+# [4.6.0](https://github.com/waitingsong/node-idcard-reader/compare/v4.5.0...v4.6.0) (2019-05-31)
+
+
+### Features
+
+* remove loading SDT_ReadAllAppMsg ([a4bead3](https://github.com/waitingsong/node-idcard-reader/commit/a4bead3))
 
 
 
