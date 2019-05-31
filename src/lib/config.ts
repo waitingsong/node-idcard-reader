@@ -47,7 +47,7 @@ export const dllFuncs: FModel.DllFuncs = {
   SDT_GetSAMIDToStr: ['int', ['int', 'pointer', 'int'] ],
   /** 读取追加信息 */
   SDT_ReadNewAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
-  SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
+  // SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
 }
 
 export const dllImgFuncs: FModel.DllFuncs = {
