@@ -41,13 +41,13 @@ export const dllFuncs: FModel.DllFuncs = {
   SDT_ReadBaseMsg: ['int', ['int', 'pointer', 'pointer', 'pointer', 'pointer', 'int'] ],
   /** 对 SAM 进行状态检测 */
   SDT_GetSAMStatus: ['int', ['int', 'int'] ],
-  /** 重置SAM */
-  SDT_ResetSAM: ['int', ['int', 'int'] ],
   /** 读取SAM_V的编号 返回值0x90-成功，其他-失败 */
   SDT_GetSAMIDToStr: ['int', ['int', 'pointer', 'int'] ],
   /** 读取追加信息 */
   SDT_ReadNewAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
   // SDT_ReadAllAppMsg: ['int', ['int', 'pointer', 'pointer', 'int'] ],
+  /** 重置SAM */
+  SDT_ResetSAM: ['int', ['int', 'int'] ],
 }
 
 export const dllImgFuncs: FModel.DllFuncs = {

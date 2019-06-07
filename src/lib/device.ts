@@ -4,7 +4,16 @@ import {
 import { error, info } from '@waiting/log'
 import { dirname } from '@waiting/shared-core'
 import { of, range, timer, Observable } from 'rxjs'
-import { concatMap, defaultIfEmpty, filter, map, mergeMap, take, tap, timeout } from 'rxjs/operators'
+import {
+  concatMap,
+  defaultIfEmpty,
+  filter,
+  map,
+  mergeMap,
+  take,
+  tap,
+  timeout,
+} from 'rxjs/operators'
 
 import { Device } from './model'
 
@@ -17,7 +26,6 @@ export function connectDevice(device: Device, port: number): number {
 
   const openRet = device.apib.SDT_OpenPort(port)
   device.deviceOpts.debug && info(`open device port ret: ${openRet}`)
-
   return openRet === 144 ? port : 0
 }
 
@@ -27,6 +35,26 @@ export function disconnectDevice(device: Device): boolean {
   device.deviceOpts.debug && info(`disconnectDevice at port: ${device.openPort}, ret: ${ret} `)
   device.inUse = false
   return ret === 144 ? true : false
+}
+
+export function resetDevice(device: Device, port?: number): void {
+  if (port && port > 0) {
+    const ret = device.apib.SDT_ResetSAM(port, 0)
+    info(`reset ${port} ret: ${ret}`)
+  }
+  else {
+    for (let i = 1; i <= 16; i++) {
+      const ret = device.apib.SDT_ResetSAM(i, 0)
+      info(`reset ${i} ret: ${ret}`)
+    }
+    for (let i = 1001; i <= 1016; i++) {
+      const ret = device.apib.SDT_ResetSAM(i, 0)
+      info(`reset ${i} ret: ${ret}`)
+    }
+  }
+
+  device.deviceOpts.debug && info(`reset device at port: ${device.openPort}`)
+  device.inUse = false
 }
 
 
@@ -46,7 +74,7 @@ export function findDeviceList(
   }
   else {
     // 必须先检测usb端口
-    for (let i = 1000; i <= 1016; i++) {
+    for (let i = 1001; i <= 1016; i++) {
       const device = findDevice(i, deviceOpts, compositeOpts, apib, true)
 
       if (device.openPort > 0) {
@@ -122,7 +150,10 @@ export function readDataBase(device: Device): Observable<RawData> {
     // info('IDCard_GetInformation() target path:' + targetPath)
   }
 
-  connectDevice(device, device.openPort)
+  const open = connectDevice(device, device.openPort)
+  if (! open) {
+    throw new Error(`打开端口失败 readDataBase() port: ${device.openPort}`)
+  }
 
   const cardReady$ = findCard(device).pipe(
     mergeMap(found => {
@@ -209,10 +240,10 @@ export function selectCard(device: Device): boolean {
 
 function readCard(device: Device): RawData {
   const opts = {
-    pucCHMsg: Buffer.alloc(1024),
-    puiCHMsgLen: Buffer.from([1024]),
-    pucPHMsg: Buffer.alloc(1024),
-    puiPHMsgLen: Buffer.from([1024]),
+    pucCHMsg: Buffer.alloc(1024), // 文字信息
+    puiCHMsgLen: Buffer.from([1024]), // 文字信息长度
+    pucPHMsg: Buffer.alloc(1024), // 照片信息
+    puiPHMsgLen: Buffer.from([1024]), // 照片信息长度
   }
   // console.log(opts)
 
@@ -240,6 +271,9 @@ function readCard(device: Device): RawData {
 
   if (data.code === 144) {
     data.err = 0
+  }
+  else {
+    resetDevice(device, device.openPort)
   }
 
   return data
