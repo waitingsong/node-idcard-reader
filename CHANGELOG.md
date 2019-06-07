@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [4.6.1](https://github.com/waitingsong/node-idcard-reader/compare/v4.6.0...v4.6.1) (2019-06-07)
+
+
+### Features
+
+* reset port via resetDevice() during read failure ([4ed85f3](https://github.com/waitingsong/node-idcard-reader/commit/4ed85f3))
+
+
 
 # [4.6.0](https://github.com/waitingsong/node-idcard-reader/compare/v4.5.0...v4.6.0) (2019-05-31)
 
