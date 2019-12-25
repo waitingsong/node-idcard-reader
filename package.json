@@ -28,14 +28,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/ffi": "*",
-    "@waiting/idcard-reader-base": "^1.4.0",
+    "@types/ffi-napi": "*",
+    "@waiting/idcard-reader-base": "^2.0.0",
     "@waiting/log": "^1.0.1",
-    "@waiting/shared-core": "^1.9.1",
-    "ffi": "^2.3.0",
+    "@waiting/shared-core": "3",
+    "@waiting/shared-types": "3",
+    "ffi-napi": "^2.4.5",
     "rxjs": "^6.5.2",
-    "win32-api": "^6.0.0",
-    "win32-def": "^3.2.0"
+    "win32-api": "7",
+    "win32-def": "7"
   },
   "devDependencies": {
     "@types/mocha": "5",
