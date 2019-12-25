@@ -1,7 +1,8 @@
 /// <reference types="mocha" />
 
-import { Options } from '@waiting/idcard-reader-base'
 import { basename } from 'path'
+
+import { Options } from '@waiting/idcard-reader-base'
 import * as assert from 'power-assert'
 
 import * as idcr from '../src/index'

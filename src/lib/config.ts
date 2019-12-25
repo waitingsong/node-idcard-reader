@@ -23,7 +23,7 @@ export {
 
 
 export const config: Config = {
-  appDir: '',  // update by entry point index.js
+  appDir: '', // update by entry point index.js
   tmpDir: join(tmpdir(), 'idcard-reader'),
 }
 

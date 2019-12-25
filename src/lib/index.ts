@@ -41,9 +41,7 @@ import {
   dllImgFuncs,
 } from './config'
 import { disconnectDevice, findDeviceList, readDataBase } from './device'
-import {
-  Device,
-} from './model'
+import { Device } from './model'
 
 
 export async function init(options: Options): Promise<Device[]> {
@@ -98,12 +96,12 @@ export function read(device: Device): Promise<IDData> {
 
     // 生成 base 数据
     const base$: Observable<DataBase> = raw$.pipe(
-      tap(raw => {
+      tap((raw) => {
         if (raw.err) {
           throw new Error('读卡失败：code:' + raw.code)
         }
       }),
-      map(raw => {
+      map((raw) => {
         const base = pickFields(raw && raw.text.byteLength ? raw.text.toString('ucs2') : '')
         return base
       }),
@@ -113,10 +111,10 @@ export function read(device: Device): Promise<IDData> {
     // 解码头像
     const imagePath$: Observable<string> = raw$.pipe(
       mergeMap(raw => retriveAvatar(raw.image, device)),
-      mergeMap(imagePath => {
+      mergeMap((imagePath) => {
         return fileExists(imagePath).pipe(
-          tap(path => {
-            if (!path) {
+          tap((path) => {
+            if (! path) {
               error(`解码头像文件失败 path: "${imagePath}"`)
             }
           }),
@@ -134,7 +132,7 @@ export function read(device: Device): Promise<IDData> {
       combineLatest(base$, imagePath$).pipe(
         mergeMap(([base, imagePath]) => {
           return composite(imagePath, base, device.compositeOpts).pipe(
-            map(compositePath => {
+            map((compositePath) => {
               return {
                 compositePath,
                 imagePath,
@@ -176,17 +174,17 @@ export function read(device: Device): Promise<IDData> {
 export function pickFields(text: string): DataBase {
   const ret: DataBase = { ...initialDataBase }
 
-  if (!text || !text.length) {
+  if (! text || ! text.length) {
     return ret
   }
 
   ret.name = text.slice(0, 15).trim()
   ret.gender = +text.slice(15, 16)
   ret.nation = text.slice(16, 18) // 民族
-  ret.birth = text.slice(18, 26)  // 16
-  ret.address = text.slice(26, 61).trim()   // 70
-  ret.idc = text.slice(61, 79)  // 身份证号
-  ret.regorg = text.slice(79, 94).trim()   // 签发机关
+  ret.birth = text.slice(18, 26) // 16
+  ret.address = text.slice(26, 61).trim() // 70
+  ret.idc = text.slice(61, 79) // 身份证号
+  ret.regorg = text.slice(79, 94).trim() // 签发机关
   ret.startdate = text.slice(94, 102)
   ret.enddate = text.slice(102, 110)
 
@@ -236,5 +234,5 @@ function _genImageName(prefix: string): string {
   const day = d.getDate()
   const rstr = Math.random().toString().slice(-8)
 
-  return `${prefix}${d.getFullYear()}${(mon > 9 ? mon : '0' + mon)}${(day > 9 ? day : '0' + day)}_${rstr}`
+  return `${prefix}${d.getFullYear()}${mon > 9 ? mon : '0' + mon}${day > 9 ? day : '0' + day}_${rstr}`
 }

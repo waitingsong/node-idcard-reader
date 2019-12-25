@@ -7,9 +7,9 @@ const opts = {
 }
 
 idcr.init(opts)
-  .then(devices => {
+  .then((devices) => {
     return idcr.read(devices[0])
-      .then(data => {
+      .then((data) => {
         // tslint:disable-next-line
         console.log(data)
       })

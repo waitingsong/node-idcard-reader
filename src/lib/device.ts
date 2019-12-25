@@ -1,6 +1,4 @@
-import {
-  RawData,
-} from '@waiting/idcard-reader-base'
+import { RawData } from '@waiting/idcard-reader-base'
 import { error, info } from '@waiting/log'
 import { dirname } from '@waiting/shared-core'
 import { of, range, timer, Observable } from 'rxjs'
@@ -34,7 +32,7 @@ export function disconnectDevice(device: Device): boolean {
 
   device.deviceOpts.debug && info(`disconnectDevice at port: ${device.openPort}, ret: ${ret} `)
   device.inUse = false
-  return ret === 144 ? true : false
+  return ret === 144
 }
 
 export function resetDevice(device: Device, port?: number): void {
@@ -80,7 +78,7 @@ export function findDeviceList(
       if (device.openPort > 0) {
         // device.simid = getSamid(device)
         arr.push(device)
-        if (!deviceOpts.searchAll) {
+        if (! deviceOpts.searchAll) {
           break
         }
       }
@@ -96,7 +94,7 @@ export function findDeviceList(
 
       if (device.openPort > 0) {
         arr.push(device)
-        if (!deviceOpts.searchAll) {
+        if (! deviceOpts.searchAll) {
           break
         }
       }
@@ -156,7 +154,7 @@ export function readDataBase(device: Device): Observable<RawData> {
   }
 
   const cardReady$ = findCard(device).pipe(
-    mergeMap(found => {
+    mergeMap((found) => {
       if (found) {
         return of(selectCard(device)).pipe(
           timeout(1500),
@@ -166,7 +164,7 @@ export function readDataBase(device: Device): Observable<RawData> {
         throw new Error('findCard() 未能找到指定设备')
       }
     }),
-    tap(ready => {
+    tap((ready) => {
       if (! ready) {
         throw new Error('二代证无效，请确保证件处于机具读卡区域内')
       }
@@ -175,7 +173,7 @@ export function readDataBase(device: Device): Observable<RawData> {
 
   const ret$ = cardReady$.pipe(
     map(() => readCard(device)),
-    tap(raw => {
+    tap((raw) => {
       if (device.deviceOpts.debug) {
         // info(`readDataBase bufLen: ${buf.byteLength}`)
         info('readDataBase ret')
@@ -190,7 +188,7 @@ export function readDataBase(device: Device): Observable<RawData> {
 
 /** 检测卡是否可读取状态 */
 export function findCard(device: Device): Observable<boolean> {
-  const findCardRetryTimes = device.deviceOpts.findCardRetryTimes
+  const { findCardRetryTimes } = device.deviceOpts
   const findRet$ = range(0, findCardRetryTimes > 0 ? findCardRetryTimes + 1 : 1).pipe(
     concatMap((value, index: number) => {
       if (index > 0 && index >= findCardRetryTimes) {
@@ -205,13 +203,13 @@ export function findCard(device: Device): Observable<boolean> {
     }),
   )
   const ret$ = findRet$.pipe(
-    tap(ret => {
+    tap((ret) => {
       device.deviceOpts.debug && info(`findStatus: ${ret}`)
     }),
     filter(ret => ret === 159),
     take(1),
     defaultIfEmpty(0),
-    map(ret => ret > 0 ? true : false),
+    map(ret => ret > 0),
   )
 
   return ret$
@@ -234,7 +232,7 @@ export function selectCard(device: Device): boolean {
   const buf = Buffer.alloc(4)
   const res = device.apib.SDT_SelectIDCard(device.openPort, buf, 1)
 
-  return res === 144 ? true : false
+  return res === 144
 }
 
 
