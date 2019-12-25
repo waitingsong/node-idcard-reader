@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/ffi-napi": "*",
-    "@waiting/idcard-reader-base": "^2.0.0",
+    "@waiting/idcard-reader-base": "^2.0.1",
     "@waiting/log": "^1.0.1",
     "@waiting/shared-core": "3",
     "@waiting/shared-types": "3",
