@@ -10,7 +10,7 @@ import {
   join,
   tmpdir,
 } from '@waiting/shared-core'
-import { FModel } from 'win32-api'
+import { FModel } from 'win32-def'
 
 
 export {
