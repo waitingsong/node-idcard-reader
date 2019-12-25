@@ -1,30 +1,41 @@
 {
-  "name": "npm-base",
+  "name": "idcard-reader",
   "author": "waiting",
-  "version": "0.0.1",
-  "description": "npm boilerplate",
+  "version": "4.6.1",
+  "description": "通过二代身份证机具读取二代身份证信息",
   "keywords": [
-    "种子项目",
-    "typescript",
-    "ts"
+    "idcard",
+    "idc-reader",
+    "身份证",
+    "二代身份证",
+    "二代证机具"
   ],
-  "bin": {},
+  "bin": {
+    "idc-reader": "./dist/bin/idc-reader.js"
+  },
   "browser": "",
-  "es2015": "",
+  "es2015": "./dist/index.esm.js",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bugs": {
-    "url": "https://github.com/waitingsong/npm-base/issues"
+    "url": "https://github.com/waitingsong/node-idcard-reader/issues"
   },
-  "homepage": "https://github.com/waitingsong/npm-base#readme",
+  "homepage": "https://github.com/waitingsong/node-idcard-reader#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/waitingsong/npm-base.git"
+    "url": "git+https://github.com/waitingsong/node-idcard-reader.git"
   },
   "license": "MIT",
   "dependencies": {
-    "rxjs": "^6.5.2"
+    "@types/ffi": "*",
+    "@waiting/idcard-reader-base": "^1.4.0",
+    "@waiting/log": "^1.0.1",
+    "@waiting/shared-core": "^1.9.1",
+    "ffi": "^2.3.0",
+    "rxjs": "^6.5.2",
+    "win32-api": "^6.0.0",
+    "win32-def": "^3.2.0"
   },
   "devDependencies": {
     "@types/mocha": "5",
