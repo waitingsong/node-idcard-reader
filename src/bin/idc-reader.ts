@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/unbound-method */
 import * as idcr from '../lib/index'
 
 
@@ -10,8 +12,8 @@ idcr.init(opts)
   .then((devices) => {
     return idcr.read(devices[0])
       .then((data) => {
-        // tslint:disable-next-line
         console.log(data)
       })
   })
   .catch(console.error)
+

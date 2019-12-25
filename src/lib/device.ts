@@ -41,11 +41,11 @@ export function resetDevice(device: Device, port?: number): void {
     info(`reset ${port} ret: ${ret}`)
   }
   else {
-    for (let i = 1; i <= 16; i++) {
+    for (let i = 1; i <= 16; i += 1) {
       const ret = device.apib.SDT_ResetSAM(i, 0)
       info(`reset ${i} ret: ${ret}`)
     }
-    for (let i = 1001; i <= 1016; i++) {
+    for (let i = 1001; i <= 1016; i += 1) {
       const ret = device.apib.SDT_ResetSAM(i, 0)
       info(`reset ${i} ret: ${ret}`)
     }
@@ -72,7 +72,7 @@ export function findDeviceList(
   }
   else {
     // 必须先检测usb端口
-    for (let i = 1001; i <= 1016; i++) {
+    for (let i = 1001; i <= 1016; i += 1) {
       const device = findDevice(i, deviceOpts, compositeOpts, apib, true)
 
       if (device.openPort > 0) {
@@ -89,7 +89,7 @@ export function findDeviceList(
     }
 
     // 检测串口
-    for (let i = 1; i <= 16; i++) {
+    for (let i = 1; i <= 16; i += 1) {
       const device = findDevice(i, deviceOpts, compositeOpts, apib, false)
 
       if (device.openPort > 0) {
@@ -190,7 +190,7 @@ export function readDataBase(device: Device): Observable<RawData> {
 export function findCard(device: Device): Observable<boolean> {
   const { findCardRetryTimes } = device.deviceOpts
   const findRet$ = range(0, findCardRetryTimes > 0 ? findCardRetryTimes + 1 : 1).pipe(
-    concatMap((value, index: number) => {
+    concatMap((_, index: number) => {
       if (index > 0 && index >= findCardRetryTimes) {
         throw new Error(`findCard fail over ${findCardRetryTimes} times`)
       }

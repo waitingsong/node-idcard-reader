@@ -82,12 +82,7 @@ export async function init(options: Options): Promise<Device[]> {
 /** Read card data */
 export function read(device: Device): Promise<IDData> {
   if (device.openPort) {
-    try {
-      disconnectDevice(device)
-    }
-    catch (ex) {
-      throw ex
-    }
+    disconnectDevice(device)
 
     // 读卡获取原始buffer数据
     const raw$: Observable<RawData> = readDataBase(device).pipe(
@@ -98,7 +93,7 @@ export function read(device: Device): Promise<IDData> {
     const base$: Observable<DataBase> = raw$.pipe(
       tap((raw) => {
         if (raw.err) {
-          throw new Error('读卡失败：code:' + raw.code)
+          throw new Error('读卡失败：code:' + raw.code.toString())
         }
       }),
       map((raw) => {
@@ -229,10 +224,11 @@ async function decodeImage(device: Device, buf: Buffer): Promise<string> {
 
 
 function _genImageName(prefix: string): string {
-  const d = new Date()
-  const mon = d.getMonth()
-  const day = d.getDate()
+  const dd = new Date()
+  const mon = dd.getMonth()
+  const day = dd.getDate()
   const rstr = Math.random().toString().slice(-8)
 
-  return `${prefix}${d.getFullYear()}${mon > 9 ? mon : '0' + mon}${day > 9 ? day : '0' + day}_${rstr}`
+  return `${prefix}${dd.getFullYear()}${mon > 9 ? mon : '0' + mon.toString()}${day > 9 ? day : '0' + day.toString()}_${rstr}`
 }
+
